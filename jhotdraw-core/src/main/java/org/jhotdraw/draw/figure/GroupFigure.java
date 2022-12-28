@@ -8,6 +8,8 @@
 package org.jhotdraw.draw.figure;
 
 import java.awt.geom.*;
+
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.geom.Geom;
 
 /**
@@ -23,6 +25,7 @@ public class GroupFigure extends AbstractCompositeFigure {
     /**
      * Creates a new instance.
      */
+    @FeatureEntryPoint(value= "GroupFigure")
     public GroupFigure() {
         setConnectable(false);
     }
