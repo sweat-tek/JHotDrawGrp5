@@ -7,8 +7,24 @@
  */
 package org.jhotdraw.samples.svg;
 
-import java.awt.Color;
-import java.awt.Component;
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
+import org.jhotdraw.api.app.Disposable;
+import org.jhotdraw.draw.*;
+import org.jhotdraw.draw.io.*;
+import org.jhotdraw.gui.ToolBarLayout;
+import org.jhotdraw.gui.plaf.palette.PaletteLookAndFeel;
+import org.jhotdraw.samples.svg.figures.SVGImageFigure;
+import org.jhotdraw.samples.svg.figures.SVGTextFigure;
+import org.jhotdraw.samples.svg.io.ImageMapOutputFormat;
+import org.jhotdraw.samples.svg.io.SVGOutputFormat;
+import org.jhotdraw.samples.svg.io.SVGZInputFormat;
+import org.jhotdraw.samples.svg.io.SVGZOutputFormat;
+import org.jhotdraw.undo.UndoRedoManager;
+import org.jhotdraw.util.ResourceBundleUtil;
+import org.jhotdraw.util.prefs.PreferencesUtil;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.ItemEvent;
@@ -19,40 +35,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.prefs.*;
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
-import org.jhotdraw.api.app.Disposable;
-import org.jhotdraw.draw.DefaultDrawingEditor;
-import org.jhotdraw.draw.Drawing;
-import org.jhotdraw.draw.DrawingEditor;
-import org.jhotdraw.draw.DrawingView;
-import org.jhotdraw.draw.QuadTreeDrawing;
-import org.jhotdraw.draw.io.ImageInputFormat;
-import org.jhotdraw.draw.io.ImageOutputFormat;
-import org.jhotdraw.draw.io.InputFormat;
-import org.jhotdraw.draw.io.OutputFormat;
-import org.jhotdraw.draw.io.TextInputFormat;
-import org.jhotdraw.gui.ToolBarLayout;
-import org.jhotdraw.gui.plaf.palette.PaletteLookAndFeel;
-import org.jhotdraw.samples.svg.figures.SVGImageFigure;
-import org.jhotdraw.samples.svg.figures.SVGTextFigure;
-import org.jhotdraw.samples.svg.io.ImageMapOutputFormat;
-import org.jhotdraw.samples.svg.io.SVGOutputFormat;
-import org.jhotdraw.samples.svg.io.SVGZInputFormat;
-import org.jhotdraw.samples.svg.io.SVGZOutputFormat;
-import org.jhotdraw.undo.UndoRedoManager;
-import org.jhotdraw.util.*;
-import org.jhotdraw.util.prefs.PreferencesUtil;
+import java.util.*;
+import java.util.prefs.Preferences;
 
 /**
  * JSVGDrawingAppletPanel.
@@ -194,6 +179,7 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
      * Creates a new Drawing object which can be used with this
      * {@code SVGDrawingPanel}.
      */
+    @FeatureEntryPoint(value = "svgDrawingPanel")
     public Drawing createDrawing() {
         Drawing drawing = new QuadTreeDrawing();
         LinkedList<InputFormat> inputFormats = new LinkedList<InputFormat>();
@@ -536,6 +522,7 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
         toolsPanel.add(toolsScrollPane, gridBagConstraints);
         add(toolsPanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jhotdraw.samples.svg.gui.ActionsToolBar actionToolBar;
     private org.jhotdraw.samples.svg.gui.AlignToolBar alignToolBar;

@@ -15,6 +15,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.action.AbstractApplicationAction;
 import org.jhotdraw.api.app.Application;
 import org.jhotdraw.api.app.View;
@@ -67,6 +69,7 @@ public class OpenRecentFileAction extends AbstractApplicationAction {
         putValue(Action.NAME, URIUtil.getName(uri));
     }
 
+    @FeatureEntryPoint(value = "openRecentFile")
     @Override
     public void actionPerformed(ActionEvent evt) {
         final Application app = getApplication();

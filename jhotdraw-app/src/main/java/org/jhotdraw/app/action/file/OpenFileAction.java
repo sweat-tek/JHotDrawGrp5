@@ -7,28 +7,7 @@
  */
 package org.jhotdraw.app.action.file;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.HeadlessException;
-import java.awt.Window;
-import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.prefs.Preferences;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.UIManager;
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.action.AbstractApplicationAction;
 import org.jhotdraw.api.app.Application;
 import org.jhotdraw.api.app.View;
@@ -37,6 +16,20 @@ import org.jhotdraw.gui.JSheet;
 import org.jhotdraw.net.URIUtil;
 import org.jhotdraw.util.ResourceBundleUtil;
 import org.jhotdraw.util.prefs.PreferencesUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 /**
  * Presents an {@code URIChooser} and loads the selected URI into an
@@ -93,6 +86,7 @@ public class OpenFileAction extends AbstractApplicationAction {
         return getApplication().getOpenChooser(null);
     }
 
+    @FeatureEntryPoint(value = "openFile")
     @Override
     public void actionPerformed(ActionEvent evt) {
         final Application app = getApplication();
@@ -159,6 +153,7 @@ public class OpenFileAction extends AbstractApplicationAction {
         view.setMultipleOpenId(multipleOpenId);
         view.setEnabled(false);
         // Open the file
+
         new SwingWorker() {
             @Override
             protected Object doInBackground() throws Exception {
@@ -206,8 +201,8 @@ public class OpenFileAction extends AbstractApplicationAction {
                 ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
                 JSheet.showMessageSheet(view.getComponent(),
                         "<html>" + UIManager.getString("OptionPane.css")
-                        + "<b>" + labels.getFormatted("file.open.couldntOpen.message", URIUtil.getName(uri)) + "</b><p>"
-                        + ((message == null) ? "" : message),
+                                + "<b>" + labels.getFormatted("file.open.couldntOpen.message", URIUtil.getName(uri)) + "</b><p>"
+                                + ((message == null) ? "" : message),
                         JOptionPane.ERROR_MESSAGE);
             }
         }.execute();

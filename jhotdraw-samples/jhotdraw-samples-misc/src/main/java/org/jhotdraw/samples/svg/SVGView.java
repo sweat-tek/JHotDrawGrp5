@@ -8,13 +8,7 @@
  */
 package org.jhotdraw.samples.svg;
 
-import java.awt.print.Pageable;
-import java.beans.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.net.URI;
-import java.util.HashMap;
-import javax.swing.*;
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.action.edit.RedoAction;
 import org.jhotdraw.action.edit.UndoAction;
 import org.jhotdraw.api.app.View;
@@ -28,7 +22,17 @@ import org.jhotdraw.gui.JFileURIChooser;
 import org.jhotdraw.net.URIUtil;
 import org.jhotdraw.samples.svg.io.SVGOutputFormat;
 import org.jhotdraw.undo.UndoRedoManager;
-import org.jhotdraw.util.*;
+import org.jhotdraw.util.ResourceBundleUtil;
+
+import javax.swing.*;
+import java.awt.print.Pageable;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.util.HashMap;
 
 /**
  * Provides a view on a SVG drawing.
@@ -131,6 +135,7 @@ public class SVGView extends AbstractView {
      * Reads the view from the specified uri.
      */
     @SuppressWarnings("unchecked")
+    @FeatureEntryPoint(value = "svgView")
     @Override
     public void read(final URI uri, URIChooser chooser) throws IOException {
         try {
@@ -254,6 +259,7 @@ public class SVGView extends AbstractView {
         setLayout(new java.awt.BorderLayout());
         add(svgPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jhotdraw.samples.svg.SVGDrawingPanel svgPanel;
     // End of variables declaration//GEN-END:variables

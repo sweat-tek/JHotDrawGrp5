@@ -7,20 +7,28 @@
  */
 package org.jhotdraw.draw.io;
 
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
+import org.jhotdraw.draw.Drawing;
 import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.ImageHolderFigure;
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.geom.*;
-import java.io.*;
-import java.net.URI;
-import java.util.*;
-import javax.imageio.*;
+import org.jhotdraw.util.Images;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import org.jhotdraw.draw.*;
-import static org.jhotdraw.draw.AttributeKeys.*;
-import org.jhotdraw.util.Images;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.LinkedList;
+
+import static org.jhotdraw.draw.AttributeKeys.CANVAS_HEIGHT;
+import static org.jhotdraw.draw.AttributeKeys.CANVAS_WIDTH;
 
 /**
  * An input format for importing drawings using one of the image formats
@@ -82,25 +90,25 @@ public class ImageInputFormat implements InputFormat {
     /**
      * Creates a new image input format for the specified image format.
      *
-     * @param formatName The format name for the javax.imageio.ImageIO object.
-     * @param description The format description to be used for the file filter.
+     * @param formatName    The format name for the javax.imageio.ImageIO object.
+     * @param description   The format description to be used for the file filter.
      * @param fileExtension The file extension to be used for the file filter.
-     * @param mimeType The mime type used for filtering data flavors from
-     * Transferable objects.
+     * @param mimeType      The mime type used for filtering data flavors from
+     *                      Transferable objects.
      */
     public ImageInputFormat(ImageHolderFigure prototype, String formatName, String description, String fileExtension,
-            String mimeType) {
+                            String mimeType) {
         this(prototype, formatName, description, new String[]{fileExtension}, new String[]{mimeType});
     }
 
     /**
      * Creates a new image input format for the specified image format.
      *
-     * @param formatName The format name for the javax.imageio.ImageIO object.
-     * @param description The format description to be used for the file filter.
+     * @param formatName     The format name for the javax.imageio.ImageIO object.
+     * @param description    The format description to be used for the file filter.
      * @param fileExtensions The file extensions to be used for the file filter.
-     * @param mimeTypes The mime typse used for filtering data flavors from
-     * Transferable objects.
+     * @param mimeTypes      The mime typse used for filtering data flavors from
+     *                       Transferable objects.
      */
     public ImageInputFormat(ImageHolderFigure prototype, String formatName, String description, String fileExtensions[], String[] mimeTypes) {
         this.prototype = prototype;
@@ -129,6 +137,7 @@ public class ImageInputFormat implements InputFormat {
         read(new File(uri), drawing);
     }
 
+    @FeatureEntryPoint(value = "drawImage")
     @Override
     public void read(URI uri, Drawing drawing, boolean replace) throws IOException {
         read(new File(uri), drawing, replace);

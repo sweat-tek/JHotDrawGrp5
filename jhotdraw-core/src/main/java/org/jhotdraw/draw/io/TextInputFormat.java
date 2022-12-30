@@ -7,17 +7,21 @@
  */
 package org.jhotdraw.draw.io;
 
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
+import org.jhotdraw.draw.Drawing;
 import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.TextHolderFigure;
-import java.awt.datatransfer.*;
-import java.awt.geom.*;
-import java.io.*;
-import java.net.URI;
-import java.util.*;
+import org.jhotdraw.geom.Dimension2DDouble;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import org.jhotdraw.draw.*;
-import org.jhotdraw.geom.Dimension2DDouble;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.geom.Point2D;
+import java.io.*;
+import java.net.URI;
+import java.util.LinkedList;
 
 /**
  * An input format for importing text into a drawing.
@@ -78,16 +82,16 @@ public class TextInputFormat implements InputFormat {
     /**
      * Creates a new image output format for the specified image format.
      *
-     * @param formatName The format name for the javax.imageio.ImageIO object.
-     * @param description The format description to be used for the file filter.
+     * @param formatName    The format name for the javax.imageio.ImageIO object.
+     * @param description   The format description to be used for the file filter.
      * @param fileExtension The file extension to be used for file filter.
-     * @param isMultiline Set this to true, if the TextHolderFigure can hold
-     * multiple lines of text. If this is true, multiple lines of text are
-     * added to the same figure. If this is false, a new Figure is created for
-     * each line of text.
+     * @param isMultiline   Set this to true, if the TextHolderFigure can hold
+     *                      multiple lines of text. If this is true, multiple lines of text are
+     *                      added to the same figure. If this is false, a new Figure is created for
+     *                      each line of text.
      */
     public TextInputFormat(TextHolderFigure prototype, String formatName,
-            String description, String fileExtension, boolean isMultiline) {
+                           String description, String fileExtension, boolean isMultiline) {
         this.prototype = prototype;
         this.formatName = formatName;
         this.description = description;
@@ -114,6 +118,7 @@ public class TextInputFormat implements InputFormat {
         read(new File(uri), drawing);
     }
 
+    @FeatureEntryPoint(value = "drawText")
     @Override
     public void read(URI uri, Drawing drawing, boolean replace) throws IOException {
         read(new File(uri), drawing, replace);

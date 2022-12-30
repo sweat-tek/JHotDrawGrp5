@@ -17,6 +17,8 @@ import java.lang.reflect.*;
 import java.net.URI;
 import javax.swing.*;
 import javax.swing.border.*;
+
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.action.edit.RedoAction;
 import org.jhotdraw.action.edit.UndoAction;
 import org.jhotdraw.api.gui.URIChooser;
@@ -101,6 +103,7 @@ public class DrawView extends AbstractView {
     /**
      * Creates a new Drawing for this view.
      */
+    @FeatureEntryPoint(value = "drawView")
     protected Drawing createDrawing() {
         Drawing drawing = new QuadTreeDrawing();
         DOMStorableInputOutputFormat ioFormat
