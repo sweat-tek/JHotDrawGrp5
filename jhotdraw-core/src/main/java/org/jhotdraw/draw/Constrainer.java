@@ -7,6 +7,7 @@
  */
 package org.jhotdraw.draw;
 
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.figure.Figure;
 import java.awt.*;
 import java.awt.geom.*;
@@ -46,6 +47,8 @@ public interface Constrainer {
      * @param p A point on the drawing.
      * @return Returns the constrained point.
      */
+    @FeatureEntryPoint(value = "Rectangle3")
+
     public Point2D.Double constrainPoint(Point2D.Double p, Figure... figures);
 
     /**

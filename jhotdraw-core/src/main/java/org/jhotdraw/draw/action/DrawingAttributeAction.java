@@ -54,6 +54,7 @@ public class DrawingAttributeAction extends AbstractDrawingViewAction {
         this(editor, key, value, name, icon, null);
     }
 
+
     public <T> DrawingAttributeAction(DrawingEditor editor, AttributeKey<T> key, T value, String name, Icon icon, Action compatibleTextAction) {
         super(editor);
         this.attributes = new HashMap<>();

@@ -10,6 +10,8 @@ package org.jhotdraw.samples.svg.figures;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
+
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.*;
 import static org.jhotdraw.draw.AttributeKeys.FILL_COLOR;
 import static org.jhotdraw.draw.AttributeKeys.STROKE_CAP;
@@ -32,6 +34,7 @@ import static org.jhotdraw.samples.svg.SVGAttributeKeys.*;
  * @author Werner Randelshofer
  * @version $Id$
  */
+
 public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
 
     private static final long serialVersionUID = 1L;
@@ -48,7 +51,6 @@ public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
      * points for the rounded rectangle using path.curveTo.
      */
     private static final double ACV;
-
     static {
         double angle = Math.PI / 4.0;
         double a = 1.0 - Math.cos(angle);
@@ -75,11 +77,10 @@ public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
     public SVGRectFigure() {
         this(0, 0, 0, 0);
     }
-
+    @FeatureEntryPoint(value = "Rectangle")
     public SVGRectFigure(double x, double y, double width, double height) {
         this(x, y, width, height, 0, 0);
     }
-
     public SVGRectFigure(double x, double y, double width, double height, double rx, double ry) {
         roundrect = new RoundRectangle2D.Double(x, y, width, height, rx, ry);
         SVGAttributeKeys.setDefaults(this);
@@ -95,7 +96,6 @@ public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
             g.fill(roundrect);
         }
     }
-
     @Override
     protected void drawStroke(Graphics2D g) {
         if (roundrect.archeight == 0 && roundrect.arcwidth == 0) {
@@ -191,7 +191,6 @@ public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
     public Rectangle2D.Double getBounds() {
         return (Rectangle2D.Double) roundrect.getBounds2D();
     }
-
     @Override
     public Rectangle2D.Double getDrawingArea() {
         Rectangle2D rx = getTransformedShape().getBounds2D();
@@ -343,7 +342,6 @@ public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
         }
         return handles;
     }
-
     // CLONING
     @Override
     public SVGRectFigure clone() {

@@ -9,6 +9,7 @@ package org.jhotdraw.draw.figure;
 
 import java.awt.*;
 import java.awt.geom.*;
+
 import org.jhotdraw.draw.AttributeKeys;
 import org.jhotdraw.geom.Geom;
 
@@ -18,22 +19,21 @@ import org.jhotdraw.geom.Geom;
  * @author Werner Randelshofer
  * @version $Id$
  */
-public class RectangleFigure extends AbstractAttributedFigure {
 
+public class RectangleFigure extends AbstractAttributedFigure {
     private static final long serialVersionUID = 1L;
     protected Rectangle2D.Double rectangle;
 
     /**
      * Creates a new instance.
      */
+
     public RectangleFigure() {
         this(0, 0, 0, 0);
     }
-
     public RectangleFigure(double x, double y, double width, double height) {
         rectangle = new Rectangle2D.Double(x, y, width, height);
     }
-
     // DRAWING
     @Override
     protected void drawFill(Graphics2D g) {
