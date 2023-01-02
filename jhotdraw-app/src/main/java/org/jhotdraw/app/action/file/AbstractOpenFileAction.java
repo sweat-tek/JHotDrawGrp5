@@ -20,14 +20,16 @@ import java.util.logging.Logger;
 public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
 
     protected final ResourceBundleUtil labels;
-    protected boolean isNewView;
+    private boolean isNewView;
+
+    private boolean isDone;
 
     public AbstractOpenFileAction(Application app) {
         super(app);
         labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
     }
 
-    protected void openView(final View view, final URI uri, final URIChooser chooser) {
+    private void openView(final View view, final URI uri, final URIChooser chooser) {
         final Application app = getApplication();
         app.show(view);
         view.setEnabled(false);
@@ -35,6 +37,7 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
         new SwingWorker() {
             @Override
             protected Object doInBackground() throws Exception {
+                setDone(false);
                 boolean exists = new File(uri).exists();
 
                 if (exists) {
@@ -63,12 +66,13 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
                     handleIOError(e, uri, view);
                 } finally {
                     view.setEnabled(true);
+                    setDone(true);
                 }
             }
         }.execute();
     }
 
-    protected View getEmptyView() {
+    private View getEmptyView() {
         final Application app = getApplication();
         final View emptyView = app.getActiveView();
         View view = emptyView;
@@ -86,7 +90,7 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
         return view;
     }
 
-    protected boolean isPreventOpenSameURI(URI uri, View view) {
+    private boolean isPreventOpenSameURI(URI uri, View view) {
         final Application app = getApplication();
         if (app.getModel().isAllowMultipleViewsPerURI()) {
             return false;
@@ -149,5 +153,13 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
         if (isNewView) {
             getApplication().dispose(view);
         }
+    }
+
+    synchronized public boolean isDone() {
+        return isDone;
+    }
+
+    synchronized public void setDone(boolean done) {
+        isDone = done;
     }
 }
