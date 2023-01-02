@@ -1815,7 +1815,6 @@ public class ButtonFactory {
     }
 
     public static AttributeAction createAndConfigureAttributeAction(DrawingEditor editor, HashMap<AttributeKey<?>, Object> attributes, String label, ColorIcon swatch) {
-        System.out.println("CREATING ACTION " + (editor.getActionMap() != null));
         AttributeAction a = new AttributeAction(
                 editor,
                 attributes,

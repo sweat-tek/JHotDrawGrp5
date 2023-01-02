@@ -1,5 +1,6 @@
 package org.jhotdraw.gui.action;
 
+import com.tngtech.jgiven.junit.ScenarioTest;
 import org.jhotdraw.draw.AttributeKey;
 import org.jhotdraw.draw.DefaultDrawingEditor;
 import org.jhotdraw.draw.DrawingEditor;
@@ -19,7 +20,7 @@ import static org.jhotdraw.draw.AttributeKeys.FILL_COLOR;
 
 import static org.junit.Assert.*;
 
-public class ButtonFactoryTest {
+public class ButtonFactoryTest extends ScenarioTest<GivenShape, WhenSelectingColor, ThenColorChange> {
 
     @Test
     public void testButtonNotNull() {
@@ -69,6 +70,13 @@ public class ButtonFactoryTest {
 
         //Assert color has changed
         assertNotEquals(originalColor, shape.get(FILL_COLOR));
+    }
+
+    @Test
+    public void testAsBDD() {
+        given().i_have_selected_a_shape_on_the_canvas();
+        when().i_choose_a_color();
+        then().the_shape_is_the_chosen_color();
     }
 
 }
