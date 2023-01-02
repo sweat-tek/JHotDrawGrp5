@@ -11,7 +11,6 @@ import org.jhotdraw.draw.figure.GroupFigure;
 import org.jhotdraw.draw.figure.Figure;
 import java.awt.*;
 import java.awt.geom.*;
-import java.awt.image.BufferedImage;
 import java.util.*;
 import org.jhotdraw.draw.*;
 import static org.jhotdraw.draw.AttributeKeys.TRANSFORM;
@@ -77,21 +76,7 @@ public class ODGGroupFigure extends GroupFigure implements ODGFigure {
                     Rectangle2D.intersect(drawingArea, clipBounds, drawingArea);
                 }
                 if (!drawingArea.isEmpty()) {
-                    BufferedImage buf = new BufferedImage(
-                            (int) ((2 + drawingArea.width) * g.getTransform().getScaleX()),
-                            (int) ((2 + drawingArea.height) * g.getTransform().getScaleY()),
-                            BufferedImage.TYPE_INT_ARGB);
-                    Graphics2D gr = buf.createGraphics();
-                    gr.scale(g.getTransform().getScaleX(), g.getTransform().getScaleY());
-                    gr.translate((int) -drawingArea.x, (int) -drawingArea.y);
-                    gr.setRenderingHints(g.getRenderingHints());
-                    super.draw(gr);
-                    gr.dispose();
-                    Composite savedComposite = g.getComposite();
-                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
-                    g.drawImage(buf, (int) drawingArea.x, (int) drawingArea.y,
-                            2 + (int) drawingArea.width, 2 + (int) drawingArea.height, null);
-                    g.setComposite(savedComposite);
+                    emptyDraw(drawingArea, g, opacity);
                 }
             } else {
                 super.draw(g);
