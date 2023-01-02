@@ -44,7 +44,9 @@ public class GroupFigure extends AbstractCompositeFigure {
         return Geom.angleToPoint(r, Geom.pointToAngle(r, from));
     }
 
-    public void emptyDraw(Rectangle2D.Double drawingArea, Graphics2D g, double opacity) {
+
+
+    public void nonEmptyDraw(Rectangle2D.Double drawingArea, Graphics2D g, double opacity) {
         BufferedImage buf = new BufferedImage(
                 Math.max(1, (int) ((2 + drawingArea.width) * g.getTransform().getScaleX())),
                 Math.max(1, (int) ((2 + drawingArea.height) * g.getTransform().getScaleY())),

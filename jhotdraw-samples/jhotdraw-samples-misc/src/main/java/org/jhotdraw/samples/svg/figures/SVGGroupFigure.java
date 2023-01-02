@@ -15,6 +15,7 @@ import java.awt.geom.*;
 import java.util.*;
 import org.jhotdraw.draw.*;
 import static org.jhotdraw.draw.AttributeKeys.TRANSFORM;
+import org.jhotdraw.draw.figure.OpacityStrategy;
 import org.jhotdraw.draw.handle.Handle;
 import org.jhotdraw.draw.handle.TransformHandleKit;
 import org.jhotdraw.samples.svg.SVGAttributeKeys;
@@ -71,20 +72,9 @@ public class SVGGroupFigure extends GroupFigure implements SVGFigure {
     @Override
     public void draw(Graphics2D g) {
         double opacity = get(OPACITY);
-        opacity = Math.min(Math.max(0d, opacity), 1d);
-        if (opacity != 0d) {
-            if (opacity != 1d) {
-                Rectangle2D.Double drawingArea = getDrawingArea();
-                Rectangle2D clipBounds = g.getClipBounds();
-                if (clipBounds != null) {
-                    Rectangle2D.intersect(drawingArea, clipBounds, drawingArea);
-                }
-                if (!drawingArea.isEmpty()) {
-                    emptyDraw(drawingArea, g, opacity);
-                }
-            } else {
-                super.draw(g);
-            }
+        OpacityStrategy ops = new OpacityStrategy(this);
+        if (ops.checkOpacity(g, opacity)){
+            super.draw(g);
         }
     }
 
