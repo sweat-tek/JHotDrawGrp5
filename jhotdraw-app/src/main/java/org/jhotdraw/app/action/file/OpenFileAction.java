@@ -100,7 +100,7 @@ public class OpenFileAction extends AbstractOpenFileAction {
      * We implement JFileChooser.showDialog by ourselves, so that we can center
      * dialogs properly on screen on Mac OS X.
      */
-    public int showDialog(URIChooser chooser, Component parent) {
+    private int showDialog(URIChooser chooser, Component parent) {
         final Component finalParent = parent;
         final int[] returnValue = new int[1];
         final JDialog dialog = createDialog(chooser, finalParent);
@@ -134,7 +134,7 @@ public class OpenFileAction extends AbstractOpenFileAction {
      * We implement JFileChooser.showDialog by ourselves, so that we can center
      * dialogs properly on screen on Mac OS X.
      */
-    protected JDialog createDialog(URIChooser chooser, Component parent) throws HeadlessException {
+    private JDialog createDialog(URIChooser chooser, Component parent) throws HeadlessException {
         String title = chooser.getDialogTitle();
         if (chooser instanceof JFileChooser) {
             ((JFileChooser) chooser).getAccessibleContext().setAccessibleDescription(title);
