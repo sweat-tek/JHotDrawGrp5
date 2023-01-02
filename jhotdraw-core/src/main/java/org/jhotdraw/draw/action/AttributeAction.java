@@ -140,7 +140,9 @@ public class AttributeAction extends AbstractSelectedAction {
                 }
             }
         };
-        getDrawing().fireUndoableEditHappened(edit);
+        if (getDrawing() != null) {
+            getDrawing().fireUndoableEditHappened(edit);
+        }
     }
 
     @Override
