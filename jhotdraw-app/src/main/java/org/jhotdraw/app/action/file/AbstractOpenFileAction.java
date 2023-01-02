@@ -22,9 +22,6 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
     protected final ResourceBundleUtil labels;
     protected boolean isNewView;
 
-    /**
-     * Creates a new instance.
-     */
     public AbstractOpenFileAction(Application app) {
         super(app);
         labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
@@ -33,11 +30,8 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
     protected void openView(final View view, final URI uri, final URIChooser chooser) {
         final Application app = getApplication();
         app.show(view);
-
-        int multipleOpenId = createViewId(view);
-        view.setMultipleOpenId(multipleOpenId);
-
         view.setEnabled(false);
+
         new SwingWorker() {
             @Override
             protected Object doInBackground() throws Exception {
@@ -56,7 +50,6 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
                 try {
                     get();
                     view.setURI(uri);
-                    view.setEnabled(true);
                     Frame w = (Frame) SwingUtilities.getWindowAncestor(view.getComponent());
                     if (w != null) {
                         w.setExtendedState(w.getExtendedState() & ~Frame.ICONIFIED);
@@ -64,17 +57,13 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
                     }
                     view.getComponent().requestFocus();
                     app.addRecentURI(uri);
-                } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(OpenFileAction.class.getName()).log(Level.SEVERE, null, ex);
-                    failed(ex);
+                } catch (InterruptedException | ExecutionException e) {
+                    Logger.getLogger(OpenFileAction.class.getName()).log(Level.SEVERE, null, e);
+                    e.printStackTrace();
+                    handleIOError(e, uri, view);
+                } finally {
+                    view.setEnabled(true);
                 }
-            }
-
-            private void failed(Throwable value) {
-                value.printStackTrace();
-                view.setEnabled(true);
-
-                handleIOError(value, uri, view);
             }
         }.execute();
     }
@@ -91,10 +80,13 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
             app.add(view);
         }
 
+        int multipleOpenId = generateViewId(view);
+        view.setMultipleOpenId(multipleOpenId);
+
         return view;
     }
 
-    protected boolean shouldPreventOpenSameURI(URI uri, View view) {
+    protected boolean isPreventOpenSameURI(URI uri, View view) {
         final Application app = getApplication();
         if (app.getModel().isAllowMultipleViewsPerURI()) {
             return false;
@@ -114,18 +106,16 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
     protected void openFileAction(URI uri, final URIChooser chooser) {
         final View view = getEmptyView();
 
-        if (shouldPreventOpenSameURI(uri, view)) {
-            return;
+        if (!isPreventOpenSameURI(uri, view)) {
+            openView(view, uri, chooser);
         }
-
-        openView(view, uri, chooser);
     }
 
     protected void openFileAction(URI uri) {
         openFileAction(uri, null);
     }
 
-    private int createViewId(View view) {
+    private int generateViewId(View view) {
         int multipleOpenId = 1;
         final Application app = getApplication();
 
