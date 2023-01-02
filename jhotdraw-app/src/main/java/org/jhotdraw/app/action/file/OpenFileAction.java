@@ -8,13 +8,9 @@
 package org.jhotdraw.app.action.file;
 
 import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
-import org.jhotdraw.action.AbstractApplicationAction;
 import org.jhotdraw.api.app.Application;
 import org.jhotdraw.api.app.View;
 import org.jhotdraw.api.gui.URIChooser;
-import org.jhotdraw.gui.JSheet;
-import org.jhotdraw.net.URIUtil;
-import org.jhotdraw.util.ResourceBundleUtil;
 import org.jhotdraw.util.prefs.PreferencesUtil;
 
 import javax.swing.*;
@@ -23,12 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 /**
@@ -67,17 +58,13 @@ import java.util.prefs.Preferences;
  * @author Werner Randelshofer
  * @version $Id$
  */
-public class OpenFileAction extends AbstractApplicationAction {
+public class OpenFileAction extends AbstractOpenFileAction {
 
     private static final long serialVersionUID = 1L;
     public static final String ID = "file.open";
 
-    /**
-     * Creates a new instance.
-     */
     public OpenFileAction(Application app) {
         super(app);
-        ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
         labels.configureAction(this, ID);
     }
 
@@ -90,122 +77,23 @@ public class OpenFileAction extends AbstractApplicationAction {
     @Override
     public void actionPerformed(ActionEvent evt) {
         final Application app = getApplication();
-        if (app.isEnabled()) {
-            app.setEnabled(false);
-            // Search for an empty view
-            View emptyView = app.getActiveView();
-            if (emptyView == null
-                    || !emptyView.isEmpty()
-                    || !emptyView.isEnabled()) {
-                emptyView = null;
-            }
-            final View view;
-            boolean disposeView;
-            if (emptyView == null) {
-                view = app.createView();
-                app.add(view);
-                disposeView = true;
-            } else {
-                view = emptyView;
-                disposeView = false;
-            }
-            URIChooser chooser = getChooser(view);
-            chooser.setDialogType(JFileChooser.OPEN_DIALOG);
-            if (showDialog(chooser, app.getComponent()) == JFileChooser.APPROVE_OPTION) {
-                app.show(view);
-                URI uri = chooser.getSelectedURI();
-                // Prevent same URI from being opened more than once
-                if (!getApplication().getModel().isAllowMultipleViewsPerURI()) {
-                    for (View v : getApplication().getViews()) {
-                        if (v.getURI() != null && v.getURI().equals(uri)) {
-                            v.getComponent().requestFocus();
-                            if (disposeView) {
-                                app.dispose(view);
-                            }
-                            app.setEnabled(true);
-                            return;
-                        }
-                    }
-                }
-                openViewFromURI(view, uri, chooser);
-            } else {
-                if (disposeView) {
-                    app.dispose(view);
-                }
-                app.setEnabled(true);
-            }
+        if (!app.isEnabled()) {
+            return;
         }
-    }
 
-    protected void openViewFromURI(final View view, final URI uri, final URIChooser chooser) {
-        final Application app = getApplication();
+        app.setEnabled(false);
+
+        URIChooser chooser = getChooser(app.getActiveView());
+        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+
+        int selectedOption = showDialog(chooser, app.getComponent());
+
+        if (selectedOption == JFileChooser.APPROVE_OPTION) {
+            URI uri = chooser.getSelectedURI();
+            openFileAction(uri, chooser);
+        }
+
         app.setEnabled(true);
-        view.setEnabled(false);
-        // If there is another view with the same URI we set the multiple open
-        // id of our view to max(multiple open id) + 1.
-        int multipleOpenId = 1;
-        for (View aView : app.views()) {
-            if (aView != view
-                    && aView.isEmpty()) {
-                multipleOpenId = Math.max(multipleOpenId, aView.getMultipleOpenId() + 1);
-            }
-        }
-        view.setMultipleOpenId(multipleOpenId);
-        view.setEnabled(false);
-        // Open the file
-
-        new SwingWorker() {
-            @Override
-            protected Object doInBackground() throws Exception {
-                boolean exists = true;
-                try {
-                    exists = new File(uri).exists();
-                } catch (IllegalArgumentException e) {
-                    // allowed empty
-                }
-                if (exists) {
-                    view.read(uri, chooser);
-                } else {
-                    ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
-                    throw new IOException(labels.getFormatted("file.open.fileDoesNotExist.message", URIUtil.getName(uri)));
-                }
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    get();
-                    final Application app = getApplication();
-                    view.setURI(uri);
-                    view.setEnabled(true);
-                    Frame w = (Frame) SwingUtilities.getWindowAncestor(view.getComponent());
-                    if (w != null) {
-                        w.setExtendedState(w.getExtendedState() & ~Frame.ICONIFIED);
-                        w.toFront();
-                    }
-                    view.getComponent().requestFocus();
-                    app.addRecentURI(uri);
-                    app.setEnabled(true);
-                } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(OpenFileAction.class.getName()).log(Level.SEVERE, null, ex);
-                    failed(ex);
-                }
-            }
-
-            protected void failed(Throwable value) {
-                value.printStackTrace();
-                view.setEnabled(true);
-                app.setEnabled(true);
-                String message = value.getMessage() != null ? value.getMessage() : value.toString();
-                ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
-                JSheet.showMessageSheet(view.getComponent(),
-                        "<html>" + UIManager.getString("OptionPane.css")
-                                + "<b>" + labels.getFormatted("file.open.couldntOpen.message", URIUtil.getName(uri)) + "</b><p>"
-                                + ((message == null) ? "" : message),
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        }.execute();
     }
 
     /**
@@ -237,7 +125,6 @@ public class OpenFileAction extends AbstractApplicationAction {
         returnValue[0] = JFileChooser.ERROR_OPTION;
         chooser.rescanCurrentDirectory();
         dialog.setVisible(true);
-        //chooser.firePropertyChange("JFileChooserDialogIsClosingProperty", dialog, null);
         dialog.removeAll();
         dialog.dispose();
         return returnValue[0];
@@ -266,17 +153,9 @@ public class OpenFileAction extends AbstractApplicationAction {
                 dialog.getRootPane().setWindowDecorationStyle(JRootPane.FILE_CHOOSER_DIALOG);
             }
         }
-        //dialog.pack();
         Preferences prefs = PreferencesUtil.userNodeForPackage(getApplication().getModel().getClass());
         PreferencesUtil.installFramePrefsHandler(prefs, "openChooser", dialog);
-        /*
-        if (window.getBounds().isEmpty()) {
-        Rectangle screenBounds = window.getGraphicsConfiguration().getBounds();
-        dialog.setLocation(screenBounds.x + (screenBounds.width - dialog.getWidth()) / 2,
-        screenBounds.y + (screenBounds.height - dialog.getHeight()) / 3);
-        } else {
-        dialog.setLocationRelativeTo(parent);
-        }*/
+
         return dialog;
     }
 }
