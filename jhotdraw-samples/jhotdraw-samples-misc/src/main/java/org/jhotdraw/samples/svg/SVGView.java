@@ -25,6 +25,7 @@ import org.jhotdraw.undo.UndoRedoManager;
 import org.jhotdraw.util.ResourceBundleUtil;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.print.Pageable;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -134,23 +135,17 @@ public class SVGView extends AbstractView {
     /**
      * Reads the view from the specified uri.
      */
-    @SuppressWarnings("unchecked")
     @FeatureEntryPoint(value = "svgView")
     @Override
     public void read(final URI uri, URIChooser chooser) throws IOException {
         try {
-            JFileURIChooser fc = (JFileURIChooser) chooser;
             final Drawing drawing = createDrawing();
             // We start with the selected uri format in the uri chooser,
             // and then try out all formats we can import.
             // We need to try out all formats, because the user may have
             // chosen to load a uri without having used the uri chooser.
-            HashMap<javax.swing.filechooser.FileFilter, InputFormat> fileFilterInputFormatMap = null;
-            if (fc != null) {
-                fileFilterInputFormatMap = (HashMap<javax.swing.filechooser.FileFilter, InputFormat>) fc.getClientProperty(SVGApplicationModel.INPUT_FORMAT_MAP_CLIENT_PROPERTY);
-            }
-            //private HashMap<javax.swing.filechooser.FileFilter, OutputFormat> fileFilterOutputFormatMap;
-            InputFormat selectedFormat = (fc == null) ? null : fileFilterInputFormatMap.get(fc.getFileFilter());
+            InputFormat selectedFormat = getSelectedFormat(chooser);
+
             boolean success = false;
             if (selectedFormat != null) {
                 try {
@@ -239,6 +234,18 @@ public class SVGView extends AbstractView {
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private InputFormat getSelectedFormat(URIChooser chooser) {
+        JFileURIChooser fc = (JFileURIChooser) chooser;
+        if (fc != null) {
+            HashMap<FileFilter, InputFormat> fileFilterInputFormatMap = (HashMap<FileFilter, InputFormat>)
+                    fc.getClientProperty(SVGApplicationModel.INPUT_FORMAT_MAP_CLIENT_PROPERTY);
+            return fileFilterInputFormatMap.get(fc.getFileFilter());
+        }
+
+        return null;
     }
 
     @Override
