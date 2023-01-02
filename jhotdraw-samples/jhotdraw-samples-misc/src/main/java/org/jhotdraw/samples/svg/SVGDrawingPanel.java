@@ -33,8 +33,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
 import java.util.prefs.Preferences;
 
 /**
@@ -77,57 +78,9 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
             // prefs is null, because we are not permitted to read preferences
         }
         initComponents();
-        toolsPane.setLayout(new ToolBarLayout());
-        toolsPane.setBackground(new Color(0xf0f0f0));
-        toolsPane.setOpaque(true);
-        viewToolBar.setView(view);
-        undoManager = new UndoRedoManager();
-        Drawing drawing = createDrawing();
-        view.setDrawing(drawing);
-        drawing.addUndoableEditListener(undoManager);
-        // Try to install the DnDDrawingViewTransferHandler
-        // Since this class only works on J2SE 6, we have to use reflection.
-        try {
-            view.setTransferHandler((TransferHandler) Class.forName("org.jhotdraw.draw.DnDDrawingViewTransferHandler").newInstance());
-        } catch (Exception e) {
-            // bail silently
-        }
-        // Sort the toolbars according to the user preferences
-        ArrayList<JToolBar> sortme = new ArrayList<>();
-        for (Component c : toolsPane.getComponents()) {
-            if (c instanceof JToolBar) {
-                sortme.add((JToolBar) c);
-            }
-        }
-        Collections.sort(sortme, new Comparator<JToolBar>() {
-            @Override
-            public int compare(JToolBar tb1, JToolBar tb2) {
-                int i1 = prefs.getInt("toolBarIndex." + tb1.getName(), 0);
-                int i2 = prefs.getInt("toolBarIndex." + tb2.getName(), 0);
-                return i1 - i2;
-            }
-        });
-        toolsPane.removeAll();
-        for (JToolBar tb : sortme) {
-            toolsPane.add(tb);
-        }
-        toolsPane.addContainerListener(containerHandler = new ContainerListener() {
-            @Override
-            public void componentAdded(ContainerEvent e) {
-                int i = 0;
-                for (Component c : toolsPane.getComponents()) {
-                    if (c instanceof JToolBar) {
-                        JToolBar tb = (JToolBar) c;
-                        prefs.putInt("toolBarIndex." + tb.getName(), i);
-                        i++;
-                    }
-                }
-            }
-
-            @Override
-            public void componentRemoved(ContainerEvent e) {
-            }
-        });
+        createLayout();
+        initTransferHandler();
+        sortToolPane();
         setEditor(new DefaultDrawingEditor());
     }
 
@@ -439,6 +392,66 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
 
     public JComponent getComponent() {
         return this;
+    }
+
+    private void createLayout() {
+        toolsPane.setLayout(new ToolBarLayout());
+        toolsPane.setBackground(new Color(0xf0f0f0));
+        toolsPane.setOpaque(true);
+        viewToolBar.setView(view);
+        undoManager = new UndoRedoManager();
+        Drawing drawing = createDrawing();
+        view.setDrawing(drawing);
+        drawing.addUndoableEditListener(undoManager);
+    }
+
+    private void initTransferHandler() {
+        // Try to install the DnDDrawingViewTransferHandler
+        // Since this class only works on J2SE 6, we have to use reflection.
+        try {
+            view.setTransferHandler((TransferHandler) Class.forName("org.jhotdraw.draw.DnDDrawingViewTransferHandler").newInstance());
+        } catch (Exception e) {
+            // bail silently
+        }
+    }
+
+    private void sortToolPane() {
+        // Sort the toolbars according to the user preferences
+        ArrayList<JToolBar> sortme = new ArrayList<>();
+        for (Component c : toolsPane.getComponents()) {
+            if (c instanceof JToolBar) {
+                sortme.add((JToolBar) c);
+            }
+        }
+
+        sortme.sort((tb1, tb2) -> {
+            int i1 = prefs.getInt("toolBarIndex." + tb1.getName(), 0);
+            int i2 = prefs.getInt("toolBarIndex." + tb2.getName(), 0);
+            return i1 - i2;
+        });
+
+        toolsPane.removeAll();
+        for (JToolBar tb : sortme) {
+            toolsPane.add(tb);
+        }
+        toolsPane.addContainerListener(containerHandler = new ContainerListener() {
+            @Override
+            public void componentAdded(ContainerEvent e) {
+                int i = 0;
+                for (Component c : toolsPane.getComponents()) {
+                    if (c instanceof JToolBar) {
+                        JToolBar tb = (JToolBar) c;
+                        prefs.putInt("toolBarIndex." + tb.getName(), i);
+                        i++;
+                    }
+                }
+            }
+
+            @Override
+            public void componentRemoved(ContainerEvent e) {
+
+            }
+        });
     }
 
     /**
