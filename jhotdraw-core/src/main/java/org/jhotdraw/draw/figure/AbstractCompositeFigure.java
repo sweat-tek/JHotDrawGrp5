@@ -7,15 +7,8 @@
  */
 package org.jhotdraw.draw.figure;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
-import javax.swing.event.*;
 import org.jhotdraw.draw.AttributeKey;
 import org.jhotdraw.draw.Drawing;
-import static org.jhotdraw.draw.AttributeKeys.*;
 import org.jhotdraw.draw.event.CompositeFigureEvent;
 import org.jhotdraw.draw.event.CompositeFigureListener;
 import org.jhotdraw.draw.event.FigureAdapter;
@@ -25,10 +18,24 @@ import org.jhotdraw.draw.handle.Handle;
 import org.jhotdraw.draw.handle.TransformHandleKit;
 import org.jhotdraw.draw.layouter.Layouter;
 import org.jhotdraw.geom.Dimension2DDouble;
-import org.jhotdraw.util.*;
+import org.jhotdraw.util.ReversedList;
 import org.jhotdraw.xml.DOMInput;
 import org.jhotdraw.xml.DOMOutput;
 import org.jhotdraw.xml.DOMStorable;
+
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
+
+import static org.jhotdraw.draw.AttributeKeys.TRANSFORM;
 
 /**
  * This abstract class can be extended to implement a {@link CompositeFigure}.
@@ -66,56 +73,6 @@ public abstract class AbstractCompositeFigure
      * Handles figure changes in the children.
      */
     protected EventHandler eventHandler;
-
-    protected class EventHandler extends FigureAdapter implements UndoableEditListener, Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void figureRequestRemove(FigureEvent e) {
-            remove(e.getFigure());
-        }
-
-        @Override
-        public void figureChanged(FigureEvent e) {
-            if (!isChanging()) {
-                Rectangle2D.Double invalidatedArea = getDrawingArea();
-                invalidatedArea.add(e.getInvalidatedArea());
-                // We call invalidate/validate here, because we must layout
-                // the figure again.
-                invalidate();
-                validate();
-                // Forward the figureChanged event to listeners on AbstractCompositeFigure.
-                invalidatedArea.add(getDrawingArea());
-                fireFigureChanged(invalidatedArea);
-            }
-        }
-
-        @Override
-        public void areaInvalidated(FigureEvent e) {
-            fireAreaInvalidated(e);
-        }
-
-        @Override
-        public void undoableEditHappened(UndoableEditEvent e) {
-            fireUndoableEditHappened(e.getEdit());
-        }
-
-        @Override
-        public void attributeChanged(FigureEvent e) {
-            invalidate();
-        }
-
-        @Override
-        public void figureAdded(FigureEvent e) {
-            invalidate();
-        }
-
-        @Override
-        public void figureRemoved(FigureEvent e) {
-            invalidate();
-        }
-    }
 
     public AbstractCompositeFigure() {
         eventHandler = createEventHandler();
@@ -435,12 +392,27 @@ public abstract class AbstractCompositeFigure
      * accesses the child components of this figure and arranges
      * their graphical presentation.
      *
-     *
      * @return layout strategy used by this figure
      */
     @Override
     public Layouter getLayouter() {
         return layouter;
+    }
+
+    /**
+     * Set a Layouter object which encapsulated a layout
+     * algorithm for this figure. Typically, a Layouter
+     * accesses the child components of this figure and arranges
+     * their graphical presentation. It is a good idea to set
+     * the Layouter in the protected initialize() method
+     * so it can be recreated if a GraphicalCompositeFigure is
+     * read and restored from a StorableInput stream.
+     *
+     * @param newLayouter encapsulation of a layout algorithm.
+     */
+    @Override
+    public void setLayouter(Layouter newLayouter) {
+        this.layouter = newLayouter;
     }
 
     /**
@@ -470,23 +442,6 @@ public abstract class AbstractCompositeFigure
             setBounds(new Point2D.Double(r.x, r.y), new Point2D.Double(r.x + r.width, r.y + r.height));
             invalidate();
         }
-    }
-
-    /**
-     * Set a Layouter object which encapsulated a layout
-     * algorithm for this figure. Typically, a Layouter
-     * accesses the child components of this figure and arranges
-     * their graphical presentation. It is a good idea to set
-     * the Layouter in the protected initialize() method
-     * so it can be recreated if a GraphicalCompositeFigure is
-     * read and restored from a StorableInput stream.
-     *
-     *
-     * @param newLayouter encapsulation of a layout algorithm.
-     */
-    @Override
-    public void setLayouter(Layouter newLayouter) {
-        this.layouter = newLayouter;
     }
 
     @Override
@@ -732,6 +687,47 @@ public abstract class AbstractCompositeFigure
         }
     }
 
+
+    /**
+     * Create a bufferedImage, used with the template method to draw when canvas is not empty
+     * @param drawingArea A rectangle defining where the group should be drawn
+     * @param g the current Graphics Object
+     * @return the newly created BufferedImage
+     */
+    public BufferedImage bufferedImageStep(Rectangle2D.Double drawingArea, Graphics2D g) {
+        return new BufferedImage(
+                Math.max(1, (int) ((2 + drawingArea.width) * g.getTransform().getScaleX())),
+                Math.max(1, (int) ((2 + drawingArea.height) * g.getTransform().getScaleY())),
+                BufferedImage.TYPE_INT_ARGB);
+    }
+
+    public void compositeStep(Graphics2D gr, Graphics2D g, BufferedImage buf, Rectangle2D.Double drawingArea, double opacity) {
+        gr.dispose();
+        Composite savedComposite = g.getComposite();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
+        g.drawImage(buf, (int) drawingArea.x, (int) drawingArea.y,
+                2 + (int) drawingArea.width, 2 + (int) drawingArea.height, null);
+        g.setComposite(savedComposite);
+    }
+
+    public void drawNewStep(Graphics2D gr, Graphics2D g, Rectangle2D.Double drawingArea) {
+        gr.scale(g.getTransform().getScaleX(), g.getTransform().getScaleY());
+        gr.translate((int) -drawingArea.x, (int) -drawingArea.y);
+        gr.setRenderingHints(g.getRenderingHints());
+        draw(gr);
+    }
+
+    /**
+     * This template method is used to draw the figure (groups) when the canvas is nonEmpty.
+     *
+     */
+    public void templateDraw(Rectangle2D.Double drawingArea, Graphics2D g, double opacity) {
+        BufferedImage buf = bufferedImageStep(drawingArea, g);
+        Graphics2D gr = buf.createGraphics();
+        drawNewStep(gr, g, drawingArea);
+        compositeStep(gr, g, buf, drawingArea, opacity);
+    }
+
     @Override
     public void removeCompositeFigureListener(CompositeFigureListener listener) {
         listenerList.remove(CompositeFigureListener.class, listener);
@@ -740,5 +736,55 @@ public abstract class AbstractCompositeFigure
     @Override
     public void addCompositeFigureListener(CompositeFigureListener listener) {
         listenerList.add(CompositeFigureListener.class, listener);
+    }
+
+    protected class EventHandler extends FigureAdapter implements UndoableEditListener, Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void figureRequestRemove(FigureEvent e) {
+            remove(e.getFigure());
+        }
+
+        @Override
+        public void figureChanged(FigureEvent e) {
+            if (!isChanging()) {
+                Rectangle2D.Double invalidatedArea = getDrawingArea();
+                invalidatedArea.add(e.getInvalidatedArea());
+                // We call invalidate/validate here, because we must layout
+                // the figure again.
+                invalidate();
+                validate();
+                // Forward the figureChanged event to listeners on AbstractCompositeFigure.
+                invalidatedArea.add(getDrawingArea());
+                fireFigureChanged(invalidatedArea);
+            }
+        }
+
+        @Override
+        public void areaInvalidated(FigureEvent e) {
+            fireAreaInvalidated(e);
+        }
+
+        @Override
+        public void undoableEditHappened(UndoableEditEvent e) {
+            fireUndoableEditHappened(e.getEdit());
+        }
+
+        @Override
+        public void attributeChanged(FigureEvent e) {
+            invalidate();
+        }
+
+        @Override
+        public void figureAdded(FigureEvent e) {
+            invalidate();
+        }
+
+        @Override
+        public void figureRemoved(FigureEvent e) {
+            invalidate();
+        }
     }
 }

@@ -14,7 +14,6 @@ import org.jhotdraw.draw.figure.SVGOpacityStrategy;
 import org.jhotdraw.draw.handle.Handle;
 import org.jhotdraw.draw.handle.TransformHandleKit;
 import org.jhotdraw.samples.svg.SVGAttributeKeys;
-
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;

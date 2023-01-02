@@ -24,7 +24,7 @@ public class SVGOpacityStrategy implements OpacityStrategy{
         }
 
         if (!drawingArea.isEmpty()) {
-            group.nonEmptyDraw(drawingArea, g, opacity);
+            group.templateDraw(drawingArea, g, opacity);
         }
         return false;
 

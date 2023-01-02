@@ -9,13 +9,9 @@ package org.jhotdraw.draw.figure;
 
 import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.geom.Geom;
-
-import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.util.Iterator;
-
 import static org.jhotdraw.draw.AttributeKeys.TRANSFORM;
 
 /**
@@ -48,26 +44,6 @@ public class GroupFigure extends AbstractCompositeFigure {
         Rectangle2D.Double r = getBounds();
         return Geom.angleToPoint(r, Geom.pointToAngle(r, from));
     }
-
-
-    public void nonEmptyDraw(Rectangle2D.Double drawingArea, Graphics2D g, double opacity) {
-        BufferedImage buf = new BufferedImage(
-                Math.max(1, (int) ((2 + drawingArea.width) * g.getTransform().getScaleX())),
-                Math.max(1, (int) ((2 + drawingArea.height) * g.getTransform().getScaleY())),
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics2D gr = buf.createGraphics();
-        gr.scale(g.getTransform().getScaleX(), g.getTransform().getScaleY());
-        gr.translate((int) -drawingArea.x, (int) -drawingArea.y);
-        gr.setRenderingHints(g.getRenderingHints());
-        super.draw(gr);
-        gr.dispose();
-        Composite savedComposite = g.getComposite();
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
-        g.drawImage(buf, (int) drawingArea.x, (int) drawingArea.y,
-                2 + (int) drawingArea.width, 2 + (int) drawingArea.height, null);
-        g.setComposite(savedComposite);
-    }
-
 
     /**
      * Returns true if all children of the group are transformable.
