@@ -20,12 +20,12 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.LinkedList;
+import java.nio.file.Files;
+import java.util.*;
 
 import static org.jhotdraw.draw.AttributeKeys.CANVAS_HEIGHT;
 import static org.jhotdraw.draw.AttributeKeys.CANVAS_WIDTH;
@@ -144,19 +144,8 @@ public class ImageInputFormat implements InputFormat {
     }
 
     public void read(File file, Drawing drawing, boolean replace) throws IOException {
-        ImageHolderFigure figure = (ImageHolderFigure) prototype.clone();
-        figure.loadImage(file);
-        figure.setBounds(
-                new Point2D.Double(0, 0),
-                new Point2D.Double(
-                        figure.getBufferedImage().getWidth(),
-                        figure.getBufferedImage().getHeight()));
-        if (replace) {
-            drawing.removeAllChildren();
-            drawing.set(CANVAS_WIDTH, figure.getBounds().width);
-            drawing.set(CANVAS_HEIGHT, figure.getBounds().height);
-        }
-        drawing.basicAdd(figure);
+        InputStream inputStream = Files.newInputStream(file.toPath());
+        read(inputStream, drawing, replace);
     }
 
     public void read(File file, Drawing drawing) throws IOException {
@@ -166,22 +155,13 @@ public class ImageInputFormat implements InputFormat {
     @Override
     public void read(InputStream in, Drawing drawing, boolean replace) throws IOException {
         ImageHolderFigure figure = createImageHolder(in);
-        if (replace) {
-            drawing.removeAllChildren();
-            drawing.set(CANVAS_WIDTH, figure.getBounds().width);
-            drawing.set(CANVAS_HEIGHT, figure.getBounds().height);
-        }
+        replace(drawing, figure, replace);
         drawing.basicAdd(figure);
     }
 
-    public ImageHolderFigure createImageHolder(InputStream in) throws IOException {
+    private ImageHolderFigure createImageHolder(InputStream in) throws IOException {
         ImageHolderFigure figure = (ImageHolderFigure) prototype.clone();
         figure.loadImage(in);
-        figure.setBounds(
-                new Point2D.Double(0, 0),
-                new Point2D.Double(
-                        figure.getBufferedImage().getWidth(),
-                        figure.getBufferedImage().getHeight()));
         return figure;
     }
 
@@ -201,6 +181,7 @@ public class ImageInputFormat implements InputFormat {
     @Override
     public void read(Transferable t, Drawing drawing, boolean replace) throws UnsupportedFlavorException, IOException {
         DataFlavor importFlavor = null;
+
         SearchLoop:
         for (DataFlavor flavor : t.getTransferDataFlavors()) {
             if (DataFlavor.imageFlavor.match(flavor)) {
@@ -221,23 +202,24 @@ public class ImageInputFormat implements InputFormat {
         } else if (data instanceof InputStream) {
             img = ImageIO.read((InputStream) data);
         }
+
         if (img == null) {
             throw new IOException("Unsupported data format " + importFlavor);
         }
         ImageHolderFigure figure = (ImageHolderFigure) prototype.clone();
         figure.setBufferedImage(Images.toBufferedImage(img));
-        figure.setBounds(
-                new Point2D.Double(0, 0),
-                new Point2D.Double(
-                        figure.getBufferedImage().getWidth(),
-                        figure.getBufferedImage().getHeight()));
+        replace(drawing, figure, replace);
+
         LinkedList<Figure> list = new LinkedList<>();
         list.add(figure);
+        drawing.addAll(list);
+    }
+
+    private void replace(Drawing drawing, Figure figure, boolean replace) {
         if (replace) {
             drawing.removeAllChildren();
             drawing.set(CANVAS_WIDTH, figure.getBounds().width);
             drawing.set(CANVAS_HEIGHT, figure.getBounds().height);
         }
-        drawing.addAll(list);
     }
 }
