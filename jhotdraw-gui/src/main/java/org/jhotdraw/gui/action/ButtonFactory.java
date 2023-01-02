@@ -75,7 +75,7 @@ import org.jhotdraw.draw.action.AttributeToggler;
 import org.jhotdraw.draw.action.BringToFrontAction;
 import org.jhotdraw.draw.action.ColorIcon;
 import org.jhotdraw.draw.action.DefaultAttributeAction;
-import org.jhotdraw.draw.action.DrawingAttributeAction;
+//import org.jhotdraw.draw.action.DrawingAttributeAction;
 import org.jhotdraw.draw.action.DrawingColorChooserAction;
 import org.jhotdraw.draw.action.DrawingColorChooserHandler;
 import org.jhotdraw.draw.action.DrawingColorIcon;
@@ -269,7 +269,8 @@ public class ButtonFactory {
         HSBColorSpace hsbCS = HSBColorSpace.getInstance();
         LinkedList<ColorIcon> m = new LinkedList<>();
         ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
-        m.add(new ColorIcon(new Color(0, true), labels.getToolTipTextProperty("attribute.color.noColor")));
+        String noColorLabel = labels.getToolTipTextProperty("attribute.color.noColor");
+        m.add(new ColorIcon(new Color(0, true), noColorLabel));
         for (int b = 10; b >= 0; b--) {
             Color c = new Color(grayCS, new float[]{b / 10f}, 1f);
             m.add(new ColorIcon(c,
@@ -293,7 +294,7 @@ public class ButtonFactory {
         m = new LinkedList<>();
         for (ColorIcon ci : HSB_COLORS) {
             if (ci.getColor() == null) {
-                m.add(new ColorIcon(new Color(0, true), labels.getToolTipTextProperty("attribute.color.noColor")));
+                m.add(new ColorIcon(new Color(0, true), noColorLabel));
             } else {
                 Color c = ci.getColor();
                 c = c.getColorSpace() == grayCS
@@ -452,17 +453,17 @@ public class ButtonFactory {
             }
         });
         double[] factors = {16, 8, 5, 4, 3, 2, 1.5, 1.25, 1, 0.75, 0.5, 0.25, 0.10};
-        for (int i = 0; i < factors.length; i++) {
+        for (double factor : factors) {
             zoomPopupButton.add(
-                    new ZoomEditorAction(editor, factors[i], zoomPopupButton) {
-                private static final long serialVersionUID = 1L;
+                    new ZoomEditorAction(editor, factor, zoomPopupButton) {
+                        private static final long serialVersionUID = 1L;
 
-                @Override
-                public void actionPerformed(java.awt.event.ActionEvent e) {
-                    super.actionPerformed(e);
-                    zoomPopupButton.setText((int) (editor.getActiveView().getScaleFactor() * 100) + " %");
-                }
-            });
+                        @Override
+                        public void actionPerformed(java.awt.event.ActionEvent e) {
+                            super.actionPerformed(e);
+                            zoomPopupButton.setText((int) (editor.getActiveView().getScaleFactor() * 100) + " %");
+                        }
+                    });
         }
         //zoomPopupButton.setPreferredSize(new Dimension(16,16));
         zoomPopupButton.setFocusable(false);
@@ -651,35 +652,23 @@ public class ButtonFactory {
         popupButton.setColumnCount(columnCount, false);
         boolean hasNullColor = false;
         for (ColorIcon swatch : swatches) {
-            AttributeAction a;
             HashMap<AttributeKey<?>, Object> attributes = new HashMap<>(defaultAttributes);
-            Color swatchColor = swatch.getColor();
-            attributes.put(attributeKey, swatchColor);
-            if (swatchColor == null || swatchColor.getAlpha() == 0) {
-                hasNullColor = true;
-            }
-            popupButton.add(a
-                    = new AttributeAction(
-                            editor,
-                            attributes,
-                            labels.getToolTipTextProperty(labelKey),
-                            swatch));
-            a.putValue(Action.SHORT_DESCRIPTION, swatch.getName());
-            a.setUpdateEnabledState(false);
+            hasNullColor = checkIfNullColor(swatch);
+            attributes.put(attributeKey, swatch.getColor());
+            AttributeAction a = createAndConfigureAttributeAction(editor, attributes, labels.getToolTipTextProperty(labelKey), swatch);
+            popupButton.add(a);
         }
         // No color
         if (!hasNullColor) {
-            AttributeAction a;
             HashMap<AttributeKey<?>, Object> attributes = new HashMap<>(defaultAttributes);
             attributes.put(attributeKey, null);
-            popupButton.add(a
-                    = new AttributeAction(
-                            editor,
-                            attributes,
-                            labels.getToolTipTextProperty("attribute.color.noColor"),
-                            new ColorIcon(null, labels.getToolTipTextProperty("attribute.color.noColor"), swatches.get(0).getIconWidth(), swatches.get(0).getIconHeight())));
-            a.putValue(Action.SHORT_DESCRIPTION, labels.getToolTipTextProperty("attribute.color.noColor"));
-            a.setUpdateEnabledState(false);
+            String noColorLabel = labels.getToolTipTextProperty("attribute.color.noColor");
+            AttributeAction a = createAndConfigureAttributeAction(
+                    editor,
+                    attributes,
+                    noColorLabel,
+                    new ColorIcon(null, noColorLabel, swatches.get(0).getIconWidth(), swatches.get(0).getIconHeight()));
+            popupButton.add(a);
         }
         // Color chooser
         ImageIcon chooserIcon = new ImageIcon(
@@ -862,22 +851,12 @@ public class ButtonFactory {
         popupButton.setColumnCount(columnCount, false);
         boolean hasNullColor = false;
         for (ColorIcon swatch : swatches) {
-            AttributeAction a;
             HashMap<AttributeKey<?>, Object> attributes = new HashMap<>(defaultAttributes);
             if (swatch != null) {
-                Color swatchColor = swatch.getColor();
-                attributes.put(attributeKey, swatchColor);
-                if (swatchColor == null || swatchColor.getAlpha() == 0) {
-                    hasNullColor = true;
-                }
-                popupButton.add(a
-                        = new AttributeAction(
-                                editor,
-                                attributes,
-                                labels.getToolTipTextProperty(labelKey),
-                                swatch));
-                a.putValue(Action.SHORT_DESCRIPTION, swatch.getName());
-                a.setUpdateEnabledState(false);
+                hasNullColor = checkIfNullColor(swatch);
+                attributes.put(attributeKey, swatch.getColor());
+                AttributeAction a = createAndConfigureAttributeAction(editor, attributes, labels.getToolTipTextProperty(labelKey), swatch);
+                popupButton.add(a);
                 dsp.add(a);
             } else {
                 popupButton.add(new JPanel());
@@ -885,17 +864,11 @@ public class ButtonFactory {
         }
         // No color
         if (!hasNullColor) {
-            AttributeAction a;
             HashMap<AttributeKey<?>, Object> attributes = new HashMap<>(defaultAttributes);
             attributes.put(attributeKey, null);
-            popupButton.add(a
-                    = new AttributeAction(
-                            editor,
-                            attributes,
-                            labels.getToolTipTextProperty("attribute.color.noColor"),
-                            new ColorIcon(null, labels.getToolTipTextProperty("attribute.color.noColor"))));
-            a.putValue(Action.SHORT_DESCRIPTION, labels.getToolTipTextProperty("attribute.color.noColor"));
-            a.setUpdateEnabledState(false);
+            String noColorLabel = labels.getToolTipTextProperty("attribute.color.noColor");
+            AttributeAction a = createAndConfigureAttributeAction(editor, attributes, noColorLabel, new ColorIcon(null, noColorLabel));
+            popupButton.add(a);
             dsp.add(a);
         }
         // Color chooser
@@ -1123,41 +1096,25 @@ public class ButtonFactory {
         popupButton.setColumnCount(columnCount, false);
         boolean hasNullColor = false;
         for (ColorIcon swatch : swatches) {
-            DrawingAttributeAction a;
             HashMap<AttributeKey<?>, Object> attributes = new HashMap<>(defaultAttributes);
             if (swatch != null) {
-                Color swatchColor = swatch.getColor();
-                attributes.put(attributeKey, swatchColor);
-                if (swatchColor == null || swatchColor.getAlpha() == 0) {
-                    hasNullColor = true;
-                }
-                popupButton.add(a
-                        = new DrawingAttributeAction(
-                                editor,
-                                attributes,
-                                labels.getToolTipTextProperty(labelKey),
-                                swatch));
+                hasNullColor = checkIfNullColor(swatch);
+                attributes.put(attributeKey, swatch.getColor());
+                AttributeAction a = createAndConfigureAttributeAction(editor, attributes, labels.getToolTipTextProperty(labelKey), swatch);
+                popupButton.add(a);
                 dsp.add(a);
-                a.putValue(Action.SHORT_DESCRIPTION, swatch.getName());
-                a.setUpdateEnabledState(false);
             } else {
                 popupButton.add(new JPanel());
             }
         }
         // No color
         if (!hasNullColor) {
-            DrawingAttributeAction a;
             HashMap<AttributeKey<?>, Object> attributes = new HashMap<>(defaultAttributes);
             attributes.put(attributeKey, null);
-            popupButton.add(a
-                    = new DrawingAttributeAction(
-                            editor,
-                            attributes,
-                            labels.getToolTipTextProperty("attribute.color.noColor"),
-                            new ColorIcon(null, labels.getToolTipTextProperty("attribute.color.noColor"))));
+            String noColorLabel = labels.getToolTipTextProperty("attribute.color.noColor");
+            AttributeAction a = createAndConfigureAttributeAction(editor, attributes, noColorLabel, new ColorIcon(null, noColorLabel));
+            popupButton.add(a);
             dsp.add(a);
-            a.putValue(Action.SHORT_DESCRIPTION, labels.getToolTipTextProperty("attribute.color.noColor"));
-            a.setUpdateEnabledState(false);
         }
         // Color chooser
         ImageIcon chooserIcon = new ImageIcon(
@@ -1851,4 +1808,22 @@ public class ButtonFactory {
         btn.setFocusable(false);
         return btn;
     }
+
+    private static boolean checkIfNullColor(ColorIcon swatch) {
+        Color swatchColor = swatch.getColor();
+        return (swatchColor == null || swatchColor.getAlpha() == 0);
+    }
+
+    public static AttributeAction createAndConfigureAttributeAction(DrawingEditor editor, HashMap<AttributeKey<?>, Object> attributes, String label, ColorIcon swatch) {
+        System.out.println("CREATING ACTION " + (editor.getActionMap() != null));
+        AttributeAction a = new AttributeAction(
+                editor,
+                attributes,
+                label,
+                swatch);
+        a.putValue(Action.SHORT_DESCRIPTION, label);
+        a.setUpdateEnabledState(false);
+        return a;
+    }
+
 }
