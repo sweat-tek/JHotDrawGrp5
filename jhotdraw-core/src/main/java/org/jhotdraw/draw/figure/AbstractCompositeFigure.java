@@ -721,7 +721,7 @@ public abstract class AbstractCompositeFigure
      * This template method is used to draw the figure (groups) when the canvas is nonEmpty.
      *
      */
-    public void templateDraw(Rectangle2D.Double drawingArea, Graphics2D g, double opacity) {
+    public final void templateDraw(Rectangle2D.Double drawingArea, Graphics2D g, double opacity) {
         BufferedImage buf = bufferedImageStep(drawingArea, g);
         Graphics2D gr = buf.createGraphics();
         drawNewStep(gr, g, drawingArea);
