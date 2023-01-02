@@ -3,7 +3,7 @@ name: tests
 on:
   push:
     branches:
-      - 'filltool'
+      - 'feat/filltool'
 
 jobs:
   run_tests:
