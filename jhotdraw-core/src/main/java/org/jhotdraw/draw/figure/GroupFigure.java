@@ -6,13 +6,17 @@
  * accompanying license terms.
  */
 package org.jhotdraw.draw.figure;
-import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.BufferedImage;
-import java.util.Iterator;
 
 import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.geom.Geom;
+
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.util.Iterator;
+
+import static org.jhotdraw.draw.AttributeKeys.TRANSFORM;
 
 /**
  * A {@link org.jhotdraw.draw.figure.Figure} which groups a collection of figures.
@@ -27,7 +31,7 @@ public class GroupFigure extends AbstractCompositeFigure {
     /**
      * Creates a new instance.
      */
-    @FeatureEntryPoint(value= "GroupFigure")
+    @FeatureEntryPoint(value = "GroupFigure")
     public GroupFigure() {
         setConnectable(false);
     }
@@ -44,7 +48,6 @@ public class GroupFigure extends AbstractCompositeFigure {
         Rectangle2D.Double r = getBounds();
         return Geom.angleToPoint(r, Geom.pointToAngle(r, from));
     }
-
 
 
     public void nonEmptyDraw(Rectangle2D.Double drawingArea, Graphics2D g, double opacity) {
@@ -80,6 +83,26 @@ public class GroupFigure extends AbstractCompositeFigure {
     }
 
     @Override
+    public Rectangle2D.Double getBounds() {
+        if (cachedBounds == null && getChildCount() == 0) {
+            cachedBounds = new Rectangle2D.Double();
+            return (Rectangle2D.Double) cachedBounds.clone();
+        }
+        for (Figure f : children) {
+            Rectangle2D.Double bounds = f.getBounds();
+            if (f.get(TRANSFORM) != null) {
+                bounds.setRect(f.get(TRANSFORM).createTransformedShape(bounds).getBounds2D());
+            }
+            if (cachedBounds == null || cachedBounds.isEmpty()) {
+                cachedBounds = bounds;
+            } else {
+                cachedBounds.add(bounds);
+            }
+        }
+        return (Rectangle2D.Double) cachedBounds.clone();
+    }
+
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append(getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1));
@@ -87,7 +110,7 @@ public class GroupFigure extends AbstractCompositeFigure {
         buf.append(hashCode());
         if (getChildCount() > 0) {
             buf.append('(');
-            for (Iterator<Figure> i = getChildren().iterator(); i.hasNext();) {
+            for (Iterator<Figure> i = getChildren().iterator(); i.hasNext(); ) {
                 Figure child = i.next();
                 buf.append(child);
                 if (i.hasNext()) {

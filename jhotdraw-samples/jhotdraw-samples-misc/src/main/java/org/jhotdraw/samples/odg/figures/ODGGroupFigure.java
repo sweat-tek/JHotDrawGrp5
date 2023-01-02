@@ -7,18 +7,19 @@
  */
 package org.jhotdraw.samples.odg.figures;
 
+import org.jhotdraw.draw.AttributeKey;
 import org.jhotdraw.draw.figure.GroupFigure;
-import org.jhotdraw.draw.figure.Figure;
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.*;
-import org.jhotdraw.draw.*;
-import static org.jhotdraw.draw.AttributeKeys.TRANSFORM;
 import org.jhotdraw.draw.figure.SVGOpacityStrategy;
 import org.jhotdraw.draw.handle.Handle;
 import org.jhotdraw.draw.handle.TransformHandleKit;
 import org.jhotdraw.samples.odg.ODGAttributeKeys;
-import static org.jhotdraw.samples.odg.ODGAttributeKeys.*;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
+import static org.jhotdraw.samples.odg.ODGAttributeKeys.OPACITY;
 
 /**
  * ODGGroupFigure.
@@ -69,31 +70,9 @@ public class ODGGroupFigure extends GroupFigure implements ODGFigure {
     public void draw(Graphics2D g) {
         double opacity = get(OPACITY);
         SVGOpacityStrategy ops = new SVGOpacityStrategy(this);
-        if (ops.execute(g, opacity)){
+        if (ops.execute(g, opacity)) {
             super.draw(g);
         }
-    }
-
-    @Override
-    public Rectangle2D.Double getBounds() {
-        if (cachedBounds == null) {
-            if (getChildCount() == 0) {
-                cachedBounds = new Rectangle2D.Double();
-            } else {
-                for (Figure f : children) {
-                    Rectangle2D.Double bounds = f.getBounds();
-                    if (f.get(TRANSFORM) != null) {
-                        bounds.setRect(f.get(TRANSFORM).createTransformedShape(bounds).getBounds2D());
-                    }
-                    if (cachedBounds == null || cachedBounds.isEmpty()) {
-                        cachedBounds = bounds;
-                    } else {
-                        cachedBounds.add(bounds);
-                    }
-                }
-            }
-        }
-        return (Rectangle2D.Double) cachedBounds.clone();
     }
 
     @Override
