@@ -7,7 +7,7 @@
  */
 package org.jhotdraw.samples.svg.gui;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
+//import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.gui.action.ButtonFactory;
 import org.jhotdraw.gui.plaf.palette.PaletteFormattedTextFieldUI;
 import org.jhotdraw.gui.plaf.palette.PaletteButtonUI;
@@ -54,7 +54,7 @@ public class FillToolBar extends AbstractToolBar {
         setDisclosureStateCount(3);
     }
 
-    @FeatureEntryPoint(value="saveEditor")
+    //@FeatureEntryPoint(value="saveEditor")
     @Override
     public void setEditor(DrawingEditor newValue) {
         if (displayer != null) {
@@ -67,7 +67,7 @@ public class FillToolBar extends AbstractToolBar {
         }
     }
 
-    @FeatureEntryPoint(value="createDisclosedComponent")
+    //@FeatureEntryPoint(value="createDisclosedComponent")
     @Override
     protected JComponent createDisclosedComponent(int state) {
         JPanel p = null;
