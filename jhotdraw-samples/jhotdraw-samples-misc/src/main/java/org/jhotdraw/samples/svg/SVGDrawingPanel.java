@@ -27,8 +27,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -68,25 +66,6 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
         }
     }
 
-    private class ItemChangeHandler implements ItemListener {
-
-        private JToolBar toolbar;
-        private String prefkey;
-
-        public ItemChangeHandler(JToolBar toolbar, String prefkey) {
-            this.toolbar = toolbar;
-            this.prefkey = prefkey;
-        }
-
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            boolean b = e.getStateChange() == ItemEvent.SELECTED;
-            toolbar.setVisible(b);
-            prefs.putBoolean(prefkey, b);
-            validate();
-        }
-    }
-
     /**
      * Creates new instance.
      */
@@ -114,7 +93,7 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
             // bail silently
         }
         // Sort the toolbars according to the user preferences
-        ArrayList<JToolBar> sortme = new ArrayList<JToolBar>();
+        ArrayList<JToolBar> sortme = new ArrayList<>();
         for (Component c : toolsPane.getComponents()) {
             if (c instanceof JToolBar) {
                 sortme.add((JToolBar) c);
@@ -182,14 +161,14 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
     @FeatureEntryPoint(value = "svgDrawingPanel")
     public Drawing createDrawing() {
         Drawing drawing = new QuadTreeDrawing();
-        LinkedList<InputFormat> inputFormats = new LinkedList<InputFormat>();
+        LinkedList<InputFormat> inputFormats = new LinkedList<>();
         inputFormats.add(new SVGZInputFormat());
         inputFormats.add(new ImageInputFormat(new SVGImageFigure(), "PNG", "Portable Network Graphics (PNG)", "png", "image/png"));
         inputFormats.add(new ImageInputFormat(new SVGImageFigure(), "JPG", "Joint Photographics Experts Group (JPEG)", "jpg", "image/jpg"));
         inputFormats.add(new ImageInputFormat(new SVGImageFigure(), "GIF", "Graphics Interchange Format (GIF)", "gif", "image/gif"));
         inputFormats.add(new TextInputFormat(new SVGTextFigure()));
         drawing.setInputFormats(inputFormats);
-        LinkedList<OutputFormat> outputFormats = new LinkedList<OutputFormat>();
+        LinkedList<OutputFormat> outputFormats = new LinkedList<>();
         outputFormats.add(new SVGOutputFormat());
         outputFormats.add(new SVGZOutputFormat());
         outputFormats.add(new ImageOutputFormat());
