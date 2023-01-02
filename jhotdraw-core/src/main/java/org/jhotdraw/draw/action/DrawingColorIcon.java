@@ -9,6 +9,8 @@ package org.jhotdraw.draw.action;
 
 import java.awt.*;
 import java.net.*;
+
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.*;
 
 /**
@@ -48,6 +50,7 @@ public class DrawingColorIcon extends javax.swing.ImageIcon {
         this.colorShape = colorShape;
     }
 
+    @FeatureEntryPoint(value="DrawingColorIcon")
     public DrawingColorIcon(
             DrawingEditor editor,
             AttributeKey<Color> key,
@@ -59,6 +62,7 @@ public class DrawingColorIcon extends javax.swing.ImageIcon {
         this.colorShape = colorShape;
     }
 
+    @FeatureEntryPoint(value="paintIcon")
     @Override
     public void paintIcon(java.awt.Component c, java.awt.Graphics gr, int x, int y) {
         Graphics2D g = (Graphics2D) gr;

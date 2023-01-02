@@ -9,6 +9,8 @@ package org.jhotdraw.gui.plaf.palette.colorchooser;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.util.Images;
 import org.jhotdraw.util.ResourceBundleUtil;
 
@@ -45,6 +47,7 @@ public class ColorIcon implements javax.swing.Icon {
         this(color, name, 14, 14);
     }
 
+    @FeatureEntryPoint(value="ColorIcon")
     public ColorIcon(Color color, String name, int width, int height) {
         this.fillColor = color;
         this.name = name;
@@ -73,6 +76,7 @@ public class ColorIcon implements javax.swing.Icon {
         return height;
     }
 
+    @FeatureEntryPoint(value="paintIcon")
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         //Graphics2D g = (Graphics2D) gr;

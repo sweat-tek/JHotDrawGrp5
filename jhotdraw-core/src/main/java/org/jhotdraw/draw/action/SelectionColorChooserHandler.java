@@ -7,6 +7,7 @@
  */
 package org.jhotdraw.draw.action;
 
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.figure.Figure;
 import java.awt.*;
 import java.util.*;
@@ -35,6 +36,7 @@ public class SelectionColorChooserHandler extends AbstractSelectedAction
     /**
      * Creates a new instance.
      */
+    @FeatureEntryPoint(value="SelectionColorChooserHandler")
     public SelectionColorChooserHandler(DrawingEditor editor, AttributeKey<Color> key, JColorChooser colorChooser, JPopupMenu popupMenu) {
         super(editor);
         this.key = key;

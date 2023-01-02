@@ -10,6 +10,8 @@ package org.jhotdraw.draw.action;
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
+
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.*;
 import org.jhotdraw.draw.event.FigureSelectionEvent;
 import org.jhotdraw.util.ResourceBundleUtil;
@@ -64,6 +66,7 @@ public class EditorColorChooserAction extends AttributeAction {
         updateEnabledState();
     }
 
+    @FeatureEntryPoint(value="actionPerformed")
     @Override
     public void actionPerformed(java.awt.event.ActionEvent e) {
         if (colorChooser == null) {

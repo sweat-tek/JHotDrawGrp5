@@ -7,6 +7,7 @@
  */
 package org.jhotdraw.gui.action;
 
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -931,6 +932,7 @@ public class ButtonFactory {
                 editor, attributeKey, labelKey, labels, defaultAttributes, colorShape, null, dsp);
     }
 
+    @FeatureEntryPoint(value="createSelectionColorChooserButton")
     public static JPopupButton createSelectionColorChooserButton(final DrawingEditor editor,
             final AttributeKey<Color> attributeKey, String labelKey,
             ResourceBundleUtil labels,
