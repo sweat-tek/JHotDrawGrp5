@@ -9,6 +9,7 @@ package org.jhotdraw.draw.figure;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 
 import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.geom.Geom;
@@ -77,4 +78,26 @@ public class GroupFigure extends AbstractCompositeFigure {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append(getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1));
+        buf.append('@');
+        buf.append(hashCode());
+        if (getChildCount() > 0) {
+            buf.append('(');
+            for (Iterator<Figure> i = getChildren().iterator(); i.hasNext();) {
+                Figure child = i.next();
+                buf.append(child);
+                if (i.hasNext()) {
+                    buf.append(',');
+                }
+            }
+            buf.append(')');
+        }
+        return buf.toString();
+    }
+
+
 }

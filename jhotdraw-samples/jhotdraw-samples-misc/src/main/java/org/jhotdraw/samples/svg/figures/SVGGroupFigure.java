@@ -121,26 +121,6 @@ public class SVGGroupFigure extends GroupFigure implements SVGFigure {
     }
 
     @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append(getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1));
-        buf.append('@');
-        buf.append(hashCode());
-        if (getChildCount() > 0) {
-            buf.append('(');
-            for (Iterator<Figure> i = getChildren().iterator(); i.hasNext();) {
-                Figure child = i.next();
-                buf.append(child);
-                if (i.hasNext()) {
-                    buf.append(',');
-                }
-            }
-            buf.append(')');
-        }
-        return buf.toString();
-    }
-
-    @Override
     public SVGGroupFigure clone() {
         SVGGroupFigure that = (SVGGroupFigure) super.clone();
         that.attributes = new HashMap<AttributeKey<?>, Object>(this.attributes);

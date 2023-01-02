@@ -110,26 +110,6 @@ public class ODGGroupFigure extends GroupFigure implements ODGFigure {
         return getChildCount() == 0;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append(getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1));
-        buf.append('@');
-        buf.append(hashCode());
-        if (getChildCount() > 0) {
-            buf.append('(');
-            for (Iterator<Figure> i = getChildren().iterator(); i.hasNext();) {
-                Figure child = i.next();
-                buf.append(child);
-                if (i.hasNext()) {
-                    buf.append(',');
-                }
-            }
-            buf.append(')');
-        }
-        return buf.toString();
-    }
-
     public ODGGroupFigure clone() {
         ODGGroupFigure that = (ODGGroupFigure) super.clone();
         that.attributes = new HashMap<AttributeKey<?>, Object>(this.attributes);
