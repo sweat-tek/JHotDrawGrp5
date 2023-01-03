@@ -6,7 +6,7 @@ on:
       - 'feat/grouping'
 
 jobs:
-  run_build:
+  run_build_test:
     runs-on: windows-latest
 
     steps:
@@ -17,10 +17,4 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Run build with Maven
-        run: mvn clean install -DskipTests
-  run_tests:
-    runs-on: ubuntu-latest
-    needs: run_build
-    steps:
-      - name: Run tests
-        run: mvn test -Dtest="GroupingTest" -DfailIfNoTests=false
+        run: mvn -B test -Dtest="GroupingTest" -DfailIfNoTests=false --file pom.xml
