@@ -11,7 +11,6 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.action.edit.CopyAction;
 import org.jhotdraw.action.edit.CutAction;
 import org.jhotdraw.action.edit.DuplicateAction;
@@ -58,7 +57,6 @@ public class ODGDrawingPanel extends JPanel {
     /**
      * Creates new instance.
      */
-    @FeatureEntryPoint(value = "AddCreationButtonConstructor")
     public ODGDrawingPanel() {
         ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
         initComponents();
