@@ -11,3 +11,4 @@ public class SVGRectangleTest
         then().the_rectangle_should_have_repositioned();
     }
 }
+
