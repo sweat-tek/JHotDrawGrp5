@@ -47,7 +47,6 @@ public interface Constrainer {
      * @param p A point on the drawing.
      * @return Returns the constrained point.
      */
-    @FeatureEntryPoint(value = "Rectangle3")
 
     public Point2D.Double constrainPoint(Point2D.Double p, Figure... figures);
 
