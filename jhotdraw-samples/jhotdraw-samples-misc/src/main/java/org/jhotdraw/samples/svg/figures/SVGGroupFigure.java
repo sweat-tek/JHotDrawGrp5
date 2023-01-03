@@ -7,7 +7,6 @@
  */
 package org.jhotdraw.samples.svg.figures;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.AttributeKey;
 import org.jhotdraw.draw.figure.GroupFigure;
 import org.jhotdraw.draw.figure.SVGOpacityStrategy;
@@ -35,7 +34,6 @@ public class SVGGroupFigure extends GroupFigure implements SVGFigure {
     /**
      * Creates a new instance.
      */
-    @FeatureEntryPoint(value = "GroupSVGFigure")
     public SVGGroupFigure() {
         SVGAttributeKeys.setDefaults(this);
     }

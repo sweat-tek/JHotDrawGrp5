@@ -7,11 +7,12 @@
  */
 package org.jhotdraw.draw.figure;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.geom.Geom;
+
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
+
 import static org.jhotdraw.draw.AttributeKeys.TRANSFORM;
 
 /**
@@ -27,7 +28,6 @@ public class GroupFigure extends AbstractCompositeFigure {
     /**
      * Creates a new instance.
      */
-    @FeatureEntryPoint(value = "GroupFigure")
     public GroupFigure() {
         setConnectable(false);
     }

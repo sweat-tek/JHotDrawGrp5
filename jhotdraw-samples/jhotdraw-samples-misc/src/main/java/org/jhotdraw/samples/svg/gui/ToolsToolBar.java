@@ -13,8 +13,6 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
-
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.action.edit.DuplicateAction;
 import org.jhotdraw.draw.AttributeKey;
 import org.jhotdraw.draw.AttributeKeys;
@@ -54,7 +52,6 @@ public class ToolsToolBar extends AbstractToolBar {
     /**
      * Creates new instance.
      */
-    @FeatureEntryPoint(value = "Toolbar")
     public ToolsToolBar() {
         ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.samples.svg.Labels");
         setName(labels.getString("tools.toolbar"));

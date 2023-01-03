@@ -7,14 +7,19 @@
  */
 package org.jhotdraw.draw.action;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
-import org.jhotdraw.draw.figure.Figure;
+import org.jhotdraw.draw.DrawingEditor;
+import org.jhotdraw.draw.DrawingView;
 import org.jhotdraw.draw.figure.CompositeFigure;
+import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.GroupFigure;
-import java.util.*;
-import javax.swing.undo.*;
-import org.jhotdraw.draw.*;
 import org.jhotdraw.util.ResourceBundleUtil;
+
+import javax.swing.undo.AbstractUndoableEdit;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoableEdit;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * GroupAction.
@@ -24,8 +29,8 @@ import org.jhotdraw.util.ResourceBundleUtil;
  */
 public class GroupAction extends AbstractSelectedAction {
 
-    private static final long serialVersionUID = 1L;
     public static final String ID = "edit.groupSelection";
+    private static final long serialVersionUID = 1L;
     private CompositeFigure prototype;
     /**
      * If this variable is true, this action groups figures.
@@ -72,7 +77,7 @@ public class GroupAction extends AbstractSelectedAction {
                 && getView().getSelectionCount() == 1
                 && prototype != null
                 && getView().getSelectedFigures().iterator().next().getClass().equals(
-                        prototype.getClass());
+                prototype.getClass());
     }
 
     @Override
@@ -156,7 +161,7 @@ public class GroupAction extends AbstractSelectedAction {
         view.addToSelection(figures);
         return figures;
     }
-    @FeatureEntryPoint(value = "GroupAction")
+
     public void groupFigures(DrawingView view, CompositeFigure group, Collection<Figure> figures) {
         Collection<Figure> sorted = view.getDrawing().sort(figures);
         int index = view.getDrawing().indexOf(sorted.iterator().next());
