@@ -16,7 +16,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: Run tests with Maven
+      - name: Run build with Maven
         run: mvn clean install -DskipTests
   run_tests:
     runs-on: ubuntu-latest
