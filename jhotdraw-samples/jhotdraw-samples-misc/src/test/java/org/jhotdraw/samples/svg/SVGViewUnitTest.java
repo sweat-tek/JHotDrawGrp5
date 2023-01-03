@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
-public class SVGViewTest {
+public class SVGViewUnitTest {
     private final String IMAGE_PATH = "src/test/resources/org.jhotdraw/";
 
     @Test

@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class SVGImageFigureTest {
+public class SVGImageFigureUnitTest {
     private final String IMAGE_PATH = "src/test/resources/org.jhotdraw/";
 
     @Test

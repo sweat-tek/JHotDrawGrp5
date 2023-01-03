@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
-public class ImageInputFormatTest {
+public class ImageInputFormatUnitTest {
 
     private final String IMAGE_PATH = "src/test/resources/org.jhotdraw/";
 

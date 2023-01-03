@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 
 import static org.mockito.Mockito.when;
 
-public class OpenRecentFileActionTest {
+public class OpenRecentFileActionUnitTest {
 
     private final String IMAGES_PATH = "src/main/resources/org/jhotdraw/app/action/images/";
 
