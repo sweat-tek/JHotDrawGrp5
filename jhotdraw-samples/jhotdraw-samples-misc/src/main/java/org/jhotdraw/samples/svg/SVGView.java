@@ -8,13 +8,6 @@
  */
 package org.jhotdraw.samples.svg;
 
-import java.awt.print.Pageable;
-import java.beans.*;
-import java.io.*;
-import java.lang.reflect.*;
-import java.net.URI;
-import java.util.HashMap;
-import javax.swing.*;
 import org.jhotdraw.action.edit.RedoAction;
 import org.jhotdraw.action.edit.UndoAction;
 import org.jhotdraw.api.app.View;
@@ -28,7 +21,18 @@ import org.jhotdraw.gui.JFileURIChooser;
 import org.jhotdraw.net.URIUtil;
 import org.jhotdraw.samples.svg.io.SVGOutputFormat;
 import org.jhotdraw.undo.UndoRedoManager;
-import org.jhotdraw.util.*;
+import org.jhotdraw.util.ResourceBundleUtil;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.awt.print.Pageable;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.util.HashMap;
 
 /**
  * Provides a view on a SVG drawing.
@@ -130,22 +134,16 @@ public class SVGView extends AbstractView {
     /**
      * Reads the view from the specified uri.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public void read(final URI uri, URIChooser chooser) throws IOException {
         try {
-            JFileURIChooser fc = (JFileURIChooser) chooser;
             final Drawing drawing = createDrawing();
             // We start with the selected uri format in the uri chooser,
             // and then try out all formats we can import.
             // We need to try out all formats, because the user may have
             // chosen to load a uri without having used the uri chooser.
-            HashMap<javax.swing.filechooser.FileFilter, InputFormat> fileFilterInputFormatMap = null;
-            if (fc != null) {
-                fileFilterInputFormatMap = (HashMap<javax.swing.filechooser.FileFilter, InputFormat>) fc.getClientProperty(SVGApplicationModel.INPUT_FORMAT_MAP_CLIENT_PROPERTY);
-            }
-            //private HashMap<javax.swing.filechooser.FileFilter, OutputFormat> fileFilterOutputFormatMap;
-            InputFormat selectedFormat = (fc == null) ? null : fileFilterInputFormatMap.get(fc.getFileFilter());
+            InputFormat selectedFormat = getSelectedFormat(chooser);
+
             boolean success = false;
             if (selectedFormat != null) {
                 try {
@@ -236,6 +234,18 @@ public class SVGView extends AbstractView {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private InputFormat getSelectedFormat(URIChooser chooser) {
+        JFileURIChooser fc = (JFileURIChooser) chooser;
+        if (fc != null) {
+            HashMap<FileFilter, InputFormat> fileFilterInputFormatMap = (HashMap<FileFilter, InputFormat>)
+                    fc.getClientProperty(SVGApplicationModel.INPUT_FORMAT_MAP_CLIENT_PROPERTY);
+            return fileFilterInputFormatMap.get(fc.getFileFilter());
+        }
+
+        return null;
+    }
+
     @Override
     public boolean canSaveTo(URI file) {
         return file.getPath().endsWith(".svg")
@@ -254,6 +264,7 @@ public class SVGView extends AbstractView {
         setLayout(new java.awt.BorderLayout());
         add(svgPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jhotdraw.samples.svg.SVGDrawingPanel svgPanel;
     // End of variables declaration//GEN-END:variables

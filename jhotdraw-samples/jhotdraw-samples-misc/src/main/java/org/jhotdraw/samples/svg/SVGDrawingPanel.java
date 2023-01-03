@@ -7,41 +7,9 @@
  */
 package org.jhotdraw.samples.svg;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.prefs.*;
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
-import javax.swing.TransferHandler;
 import org.jhotdraw.api.app.Disposable;
-import org.jhotdraw.draw.DefaultDrawingEditor;
-import org.jhotdraw.draw.Drawing;
-import org.jhotdraw.draw.DrawingEditor;
-import org.jhotdraw.draw.DrawingView;
-import org.jhotdraw.draw.QuadTreeDrawing;
-import org.jhotdraw.draw.io.ImageInputFormat;
-import org.jhotdraw.draw.io.ImageOutputFormat;
-import org.jhotdraw.draw.io.InputFormat;
-import org.jhotdraw.draw.io.OutputFormat;
-import org.jhotdraw.draw.io.TextInputFormat;
+import org.jhotdraw.draw.*;
+import org.jhotdraw.draw.io.*;
 import org.jhotdraw.gui.ToolBarLayout;
 import org.jhotdraw.gui.plaf.palette.PaletteLookAndFeel;
 import org.jhotdraw.samples.svg.figures.SVGImageFigure;
@@ -51,8 +19,23 @@ import org.jhotdraw.samples.svg.io.SVGOutputFormat;
 import org.jhotdraw.samples.svg.io.SVGZInputFormat;
 import org.jhotdraw.samples.svg.io.SVGZOutputFormat;
 import org.jhotdraw.undo.UndoRedoManager;
-import org.jhotdraw.util.*;
+import org.jhotdraw.util.ResourceBundleUtil;
 import org.jhotdraw.util.prefs.PreferencesUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * JSVGDrawingAppletPanel.
@@ -83,25 +66,6 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
         }
     }
 
-    private class ItemChangeHandler implements ItemListener {
-
-        private JToolBar toolbar;
-        private String prefkey;
-
-        public ItemChangeHandler(JToolBar toolbar, String prefkey) {
-            this.toolbar = toolbar;
-            this.prefkey = prefkey;
-        }
-
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            boolean b = e.getStateChange() == ItemEvent.SELECTED;
-            toolbar.setVisible(b);
-            prefs.putBoolean(prefkey, b);
-            validate();
-        }
-    }
-
     /**
      * Creates new instance.
      */
@@ -113,57 +77,9 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
             // prefs is null, because we are not permitted to read preferences
         }
         initComponents();
-        toolsPane.setLayout(new ToolBarLayout());
-        toolsPane.setBackground(new Color(0xf0f0f0));
-        toolsPane.setOpaque(true);
-        viewToolBar.setView(view);
-        undoManager = new UndoRedoManager();
-        Drawing drawing = createDrawing();
-        view.setDrawing(drawing);
-        drawing.addUndoableEditListener(undoManager);
-        // Try to install the DnDDrawingViewTransferHandler
-        // Since this class only works on J2SE 6, we have to use reflection.
-        try {
-            view.setTransferHandler((TransferHandler) Class.forName("org.jhotdraw.draw.DnDDrawingViewTransferHandler").newInstance());
-        } catch (Exception e) {
-            // bail silently
-        }
-        // Sort the toolbars according to the user preferences
-        ArrayList<JToolBar> sortme = new ArrayList<JToolBar>();
-        for (Component c : toolsPane.getComponents()) {
-            if (c instanceof JToolBar) {
-                sortme.add((JToolBar) c);
-            }
-        }
-        Collections.sort(sortme, new Comparator<JToolBar>() {
-            @Override
-            public int compare(JToolBar tb1, JToolBar tb2) {
-                int i1 = prefs.getInt("toolBarIndex." + tb1.getName(), 0);
-                int i2 = prefs.getInt("toolBarIndex." + tb2.getName(), 0);
-                return i1 - i2;
-            }
-        });
-        toolsPane.removeAll();
-        for (JToolBar tb : sortme) {
-            toolsPane.add(tb);
-        }
-        toolsPane.addContainerListener(containerHandler = new ContainerListener() {
-            @Override
-            public void componentAdded(ContainerEvent e) {
-                int i = 0;
-                for (Component c : toolsPane.getComponents()) {
-                    if (c instanceof JToolBar) {
-                        JToolBar tb = (JToolBar) c;
-                        prefs.putInt("toolBarIndex." + tb.getName(), i);
-                        i++;
-                    }
-                }
-            }
-
-            @Override
-            public void componentRemoved(ContainerEvent e) {
-            }
-        });
+        createLayout();
+        initTransferHandler();
+        sortToolPane();
         setEditor(new DefaultDrawingEditor());
     }
 
@@ -196,14 +112,14 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
      */
     public Drawing createDrawing() {
         Drawing drawing = new QuadTreeDrawing();
-        LinkedList<InputFormat> inputFormats = new LinkedList<InputFormat>();
+        LinkedList<InputFormat> inputFormats = new LinkedList<>();
         inputFormats.add(new SVGZInputFormat());
         inputFormats.add(new ImageInputFormat(new SVGImageFigure(), "PNG", "Portable Network Graphics (PNG)", "png", "image/png"));
         inputFormats.add(new ImageInputFormat(new SVGImageFigure(), "JPG", "Joint Photographics Experts Group (JPEG)", "jpg", "image/jpg"));
         inputFormats.add(new ImageInputFormat(new SVGImageFigure(), "GIF", "Graphics Interchange Format (GIF)", "gif", "image/gif"));
         inputFormats.add(new TextInputFormat(new SVGTextFigure()));
         drawing.setInputFormats(inputFormats);
-        LinkedList<OutputFormat> outputFormats = new LinkedList<OutputFormat>();
+        LinkedList<OutputFormat> outputFormats = new LinkedList<>();
         outputFormats.add(new SVGOutputFormat());
         outputFormats.add(new SVGZOutputFormat());
         outputFormats.add(new ImageOutputFormat());
@@ -476,6 +392,66 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
         return this;
     }
 
+    private void createLayout() {
+        toolsPane.setLayout(new ToolBarLayout());
+        toolsPane.setBackground(new Color(0xf0f0f0));
+        toolsPane.setOpaque(true);
+        viewToolBar.setView(view);
+        undoManager = new UndoRedoManager();
+        Drawing drawing = createDrawing();
+        view.setDrawing(drawing);
+        drawing.addUndoableEditListener(undoManager);
+    }
+
+    private void initTransferHandler() {
+        // Try to install the DnDDrawingViewTransferHandler
+        // Since this class only works on J2SE 6, we have to use reflection.
+        try {
+            view.setTransferHandler((TransferHandler) Class.forName("org.jhotdraw.draw.DnDDrawingViewTransferHandler").newInstance());
+        } catch (Exception e) {
+            // bail silently
+        }
+    }
+
+    private void sortToolPane() {
+        // Sort the toolbars according to the user preferences
+        ArrayList<JToolBar> sortme = new ArrayList<>();
+        for (Component c : toolsPane.getComponents()) {
+            if (c instanceof JToolBar) {
+                sortme.add((JToolBar) c);
+            }
+        }
+
+        sortme.sort((tb1, tb2) -> {
+            int i1 = prefs.getInt("toolBarIndex." + tb1.getName(), 0);
+            int i2 = prefs.getInt("toolBarIndex." + tb2.getName(), 0);
+            return i1 - i2;
+        });
+
+        toolsPane.removeAll();
+        for (JToolBar tb : sortme) {
+            toolsPane.add(tb);
+        }
+        toolsPane.addContainerListener(containerHandler = new ContainerListener() {
+            @Override
+            public void componentAdded(ContainerEvent e) {
+                int i = 0;
+                for (Component c : toolsPane.getComponents()) {
+                    if (c instanceof JToolBar) {
+                        JToolBar tb = (JToolBar) c;
+                        prefs.putInt("toolBarIndex." + tb.getName(), i);
+                        i++;
+                    }
+                }
+            }
+
+            @Override
+            public void componentRemoved(ContainerEvent e) {
+
+            }
+        });
+    }
+
     /**
      * This method is called from within the constructor to
      * initialize the form.
@@ -536,6 +512,7 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
         toolsPanel.add(toolsScrollPane, gridBagConstraints);
         add(toolsPanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jhotdraw.samples.svg.gui.ActionsToolBar actionToolBar;
     private org.jhotdraw.samples.svg.gui.AlignToolBar alignToolBar;

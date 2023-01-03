@@ -1,0 +1,89 @@
+{
+  "className": "BDD.MainBDD",
+  "name": "Main BDD",
+  "scenarios": [
+    {
+      "className": "BDD.MainBDD",
+      "testMethodName": "something_should_happen",
+      "description": "something should happen",
+      "tagIds": [],
+      "explicitParameters": [],
+      "derivedParameters": [],
+      "scenarioCases": [
+        {
+          "caseNr": 1,
+          "steps": [
+            {
+              "name": "opening open file dialog",
+              "words": [
+                {
+                  "value": "given",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "opening open file dialog"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@22fee6ac",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@22fee6ac"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 1100043582,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "selecting valid file",
+              "words": [
+                {
+                  "value": "selecting valid file"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@22fee6ac",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@22fee6ac"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 965168,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "the file is added to drawing",
+              "words": [
+                {
+                  "value": "the file is added to drawing"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@22fee6ac",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@22fee6ac"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 1209759,
+              "depth": 0,
+              "parentFailed": false
+            }
+          ],
+          "explicitArguments": [],
+          "derivedArguments": [],
+          "status": "SUCCESS",
+          "durationInNanos": 1827036176
+        }
+      ],
+      "casesAsTable": false,
+      "durationInNanos": 1827036176
+    }
+  ],
+  "tagMap": {}
+}

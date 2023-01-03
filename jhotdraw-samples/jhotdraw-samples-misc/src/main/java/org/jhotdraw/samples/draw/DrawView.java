@@ -17,6 +17,7 @@ import java.lang.reflect.*;
 import java.net.URI;
 import javax.swing.*;
 import javax.swing.border.*;
+
 import org.jhotdraw.action.edit.RedoAction;
 import org.jhotdraw.action.edit.UndoAction;
 import org.jhotdraw.api.gui.URIChooser;

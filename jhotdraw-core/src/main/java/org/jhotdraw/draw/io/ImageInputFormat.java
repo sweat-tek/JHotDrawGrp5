@@ -7,20 +7,27 @@
  */
 package org.jhotdraw.draw.io;
 
+import org.jhotdraw.draw.Drawing;
 import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.ImageHolderFigure;
-import java.awt.*;
-import java.awt.datatransfer.*;
-import java.awt.geom.*;
-import java.io.*;
-import java.net.URI;
-import java.util.*;
-import javax.imageio.*;
+import org.jhotdraw.util.Images;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import org.jhotdraw.draw.*;
-import static org.jhotdraw.draw.AttributeKeys.*;
-import org.jhotdraw.util.Images;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.Files;
+import java.util.*;
+
+import static org.jhotdraw.draw.AttributeKeys.CANVAS_HEIGHT;
+import static org.jhotdraw.draw.AttributeKeys.CANVAS_WIDTH;
 
 /**
  * An input format for importing drawings using one of the image formats
@@ -82,25 +89,25 @@ public class ImageInputFormat implements InputFormat {
     /**
      * Creates a new image input format for the specified image format.
      *
-     * @param formatName The format name for the javax.imageio.ImageIO object.
-     * @param description The format description to be used for the file filter.
+     * @param formatName    The format name for the javax.imageio.ImageIO object.
+     * @param description   The format description to be used for the file filter.
      * @param fileExtension The file extension to be used for the file filter.
-     * @param mimeType The mime type used for filtering data flavors from
-     * Transferable objects.
+     * @param mimeType      The mime type used for filtering data flavors from
+     *                      Transferable objects.
      */
     public ImageInputFormat(ImageHolderFigure prototype, String formatName, String description, String fileExtension,
-            String mimeType) {
+                            String mimeType) {
         this(prototype, formatName, description, new String[]{fileExtension}, new String[]{mimeType});
     }
 
     /**
      * Creates a new image input format for the specified image format.
      *
-     * @param formatName The format name for the javax.imageio.ImageIO object.
-     * @param description The format description to be used for the file filter.
+     * @param formatName     The format name for the javax.imageio.ImageIO object.
+     * @param description    The format description to be used for the file filter.
      * @param fileExtensions The file extensions to be used for the file filter.
-     * @param mimeTypes The mime typse used for filtering data flavors from
-     * Transferable objects.
+     * @param mimeTypes      The mime typse used for filtering data flavors from
+     *                       Transferable objects.
      */
     public ImageInputFormat(ImageHolderFigure prototype, String formatName, String description, String fileExtensions[], String[] mimeTypes) {
         this.prototype = prototype;
@@ -135,19 +142,8 @@ public class ImageInputFormat implements InputFormat {
     }
 
     public void read(File file, Drawing drawing, boolean replace) throws IOException {
-        ImageHolderFigure figure = (ImageHolderFigure) prototype.clone();
-        figure.loadImage(file);
-        figure.setBounds(
-                new Point2D.Double(0, 0),
-                new Point2D.Double(
-                        figure.getBufferedImage().getWidth(),
-                        figure.getBufferedImage().getHeight()));
-        if (replace) {
-            drawing.removeAllChildren();
-            drawing.set(CANVAS_WIDTH, figure.getBounds().width);
-            drawing.set(CANVAS_HEIGHT, figure.getBounds().height);
-        }
-        drawing.basicAdd(figure);
+        InputStream inputStream = Files.newInputStream(file.toPath());
+        read(inputStream, drawing, replace);
     }
 
     public void read(File file, Drawing drawing) throws IOException {
@@ -157,22 +153,13 @@ public class ImageInputFormat implements InputFormat {
     @Override
     public void read(InputStream in, Drawing drawing, boolean replace) throws IOException {
         ImageHolderFigure figure = createImageHolder(in);
-        if (replace) {
-            drawing.removeAllChildren();
-            drawing.set(CANVAS_WIDTH, figure.getBounds().width);
-            drawing.set(CANVAS_HEIGHT, figure.getBounds().height);
-        }
+        replace(drawing, figure, replace);
         drawing.basicAdd(figure);
     }
 
-    public ImageHolderFigure createImageHolder(InputStream in) throws IOException {
+    private ImageHolderFigure createImageHolder(InputStream in) throws IOException {
         ImageHolderFigure figure = (ImageHolderFigure) prototype.clone();
         figure.loadImage(in);
-        figure.setBounds(
-                new Point2D.Double(0, 0),
-                new Point2D.Double(
-                        figure.getBufferedImage().getWidth(),
-                        figure.getBufferedImage().getHeight()));
         return figure;
     }
 
@@ -192,6 +179,7 @@ public class ImageInputFormat implements InputFormat {
     @Override
     public void read(Transferable t, Drawing drawing, boolean replace) throws UnsupportedFlavorException, IOException {
         DataFlavor importFlavor = null;
+
         SearchLoop:
         for (DataFlavor flavor : t.getTransferDataFlavors()) {
             if (DataFlavor.imageFlavor.match(flavor)) {
@@ -212,23 +200,24 @@ public class ImageInputFormat implements InputFormat {
         } else if (data instanceof InputStream) {
             img = ImageIO.read((InputStream) data);
         }
+
         if (img == null) {
             throw new IOException("Unsupported data format " + importFlavor);
         }
         ImageHolderFigure figure = (ImageHolderFigure) prototype.clone();
         figure.setBufferedImage(Images.toBufferedImage(img));
-        figure.setBounds(
-                new Point2D.Double(0, 0),
-                new Point2D.Double(
-                        figure.getBufferedImage().getWidth(),
-                        figure.getBufferedImage().getHeight()));
+        replace(drawing, figure, replace);
+
         LinkedList<Figure> list = new LinkedList<>();
         list.add(figure);
+        drawing.addAll(list);
+    }
+
+    private void replace(Drawing drawing, Figure figure, boolean replace) {
         if (replace) {
             drawing.removeAllChildren();
             drawing.set(CANVAS_WIDTH, figure.getBounds().width);
             drawing.set(CANVAS_HEIGHT, figure.getBounds().height);
         }
-        drawing.addAll(list);
     }
 }
