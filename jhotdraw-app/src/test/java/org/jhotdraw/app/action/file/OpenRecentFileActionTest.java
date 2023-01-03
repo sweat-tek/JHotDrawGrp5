@@ -3,18 +3,20 @@ package org.jhotdraw.app.action.file;
 import org.jhotdraw.api.app.Application;
 import org.jhotdraw.api.app.View;
 import org.jhotdraw.app.DefaultApplicationModel;
-import org.jhotdraw.app.SDIApplication;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.net.URI;
+import java.nio.file.Paths;
 
 import static org.mockito.Mockito.when;
 
 public class OpenRecentFileActionTest {
+
+    private final String IMAGES_PATH = "src/main/resources/org/jhotdraw/app/action/images/";
+
     @Test
     public void testOpenRecentFile() {
         Application appMock = Mockito.mock(Application.class);
@@ -30,12 +32,12 @@ public class OpenRecentFileActionTest {
 
         ActionEvent actionEventMock = Mockito.mock(ActionEvent.class);
 
-        URI uri = URI.create("file:/home/anders/Documents/SE20/software-maintenance/JHotDrawGrp5/jhotdraw-app/src/main/resources/org/jhotdraw/app/action/images/editCopy.png");
+        URI uri = URI.create("file:" + Paths.get(IMAGES_PATH + "editCopy.png").toAbsolutePath());
         OpenRecentFileAction openRecentFileAction = new OpenRecentFileAction(appMock, uri);
 
         openRecentFileAction.actionPerformed(actionEventMock);
 
-        while(!openRecentFileAction.isDone()) {
+        while (!openRecentFileAction.isDone()) {
         }
     }
 }
