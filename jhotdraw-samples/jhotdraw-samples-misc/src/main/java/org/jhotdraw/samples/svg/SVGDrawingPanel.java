@@ -106,6 +106,7 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
      * Creates new instance.
      */
     public SVGDrawingPanel() {
+        setName("Canvas");
         labels = ResourceBundleUtil.getBundle("org.jhotdraw.samples.svg.Labels");
         try {
             prefs = PreferencesUtil.userNodeForPackage(getClass());

@@ -86,6 +86,7 @@ public class ToolsToolBar extends AbstractToolBar {
                 btn = ButtonFactory.addSelectionToolTo(this, editor,
                         ButtonFactory.createDrawingActions(editor, disposables),
                         createSelectionActions(editor));
+                btn.setName("Selection");
                 btn.setUI((PaletteButtonUI) PaletteButtonUI.createUI(btn));
                 btn.addMouseListener(new SelectionToolButtonHandler(editor));
                 gbc = new GridBagConstraints();
@@ -95,6 +96,7 @@ public class ToolsToolBar extends AbstractToolBar {
                 labels.configureToolBarButton(btn, "selectionTool");
                 attributes = new HashMap<AttributeKey<?>, Object>();
                 btn = ButtonFactory.addToolTo(this, editor, creationTool = new CreationTool(new SVGRectFigure(), attributes), "createRectangle", labels);
+                btn.setName("Rectangle");
                 creationTool.setToolDoneAfterCreation(false);
                 btn.setUI((PaletteButtonUI) PaletteButtonUI.createUI(btn));
                 gbc = new GridBagConstraints();

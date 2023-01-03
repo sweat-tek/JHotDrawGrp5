@@ -160,6 +160,7 @@ public class ActionsToolBar extends AbstractToolBar {
                 gbc.insets = new Insets(3, 3, 0, 0);
                 p.add(btn, gbc);
                 JPopupButton pb = new JPopupButton();
+                pb.setName("Action");
                 pb.setUI((PaletteButtonUI) PaletteButtonUI.createUI(pb));
                 pb.setItemFont(UIManager.getFont("MenuItem.font"));
                 labels.configureToolBarButton(pb, "actions");
@@ -182,6 +183,7 @@ public class ActionsToolBar extends AbstractToolBar {
             pb.add(new DuplicateAction());
             pb.addSeparator();
             pb.add(d = new GroupAction(editor, new SVGGroupFigure()));
+            pb.setName("Group");
             disposables.add(d);
             pb.add(d = new UngroupAction(editor, new SVGGroupFigure()));
             disposables.add(d);

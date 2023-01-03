@@ -50,8 +50,21 @@
 			<version>1.10.19</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-swing-junit</artifactId>
+			<version>3.9.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.tngtech.jgiven</groupId>
+			<artifactId>jgiven-junit</artifactId>
+			<version>1.2.4</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
+		<!--
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -60,12 +73,13 @@
 				<configuration>
 					<argLine>
 						-javaagent:"/home/alexander/.m2/repository/org/aspectj/aspectjweaver/1.9.9/aspectjweaver-1.9.9.jar"
-						--add-opens java.base/java.lang=ALL-UNNAMED
+						-add-opens java.base/java.lang=ALL-UNNAMED
 					</argLine>
 					<useSystemClassLoader>true</useSystemClassLoader>
 					<forkMode>always</forkMode>
 				</configuration>
 			</plugin>
 		</plugins>
+		-->
 	</build>
 </project>

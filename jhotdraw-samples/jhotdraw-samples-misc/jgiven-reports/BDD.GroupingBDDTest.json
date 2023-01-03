@@ -1,0 +1,143 @@
+{
+  "className": "BDD.GroupingBDDTest",
+  "name": "Grouping BDD",
+  "scenarios": [
+    {
+      "className": "BDD.GroupingBDDTest",
+      "testMethodName": "groupingBehaviorTest",
+      "description": "Grouping behavior test",
+      "tagIds": [],
+      "explicitParameters": [],
+      "derivedParameters": [],
+      "scenarioCases": [
+        {
+          "caseNr": 1,
+          "steps": [
+            {
+              "name": "selecting the rectangle tool",
+              "words": [
+                {
+                  "value": "given",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "selecting the rectangle tool"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@3d2279ec",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@3d2279ec"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 318294070,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "Drawing rectangles",
+              "words": [
+                {
+                  "value": "and",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "Drawing rectangles"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@3d2279ec",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@3d2279ec"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 495453629,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "the selection tool is selected",
+              "words": [
+                {
+                  "value": "when",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "the selection tool is selected"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@3d2279ec",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@3d2279ec"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 291794442,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "the rectangles are selected",
+              "words": [
+                {
+                  "value": "and",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "the rectangles are selected"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@3d2279ec",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@3d2279ec"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 260462481,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "The rectangles can be grouped",
+              "words": [
+                {
+                  "value": "then",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "The rectangles can be grouped"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@3d2279ec",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@3d2279ec"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 290921865,
+              "depth": 0,
+              "parentFailed": false
+            }
+          ],
+          "explicitArguments": [],
+          "derivedArguments": [],
+          "status": "SUCCESS",
+          "durationInNanos": 2678257935
+        }
+      ],
+      "casesAsTable": false,
+      "durationInNanos": 2678257935
+    }
+  ],
+  "tagMap": {}
+}
