@@ -7,7 +7,6 @@
  */
 package org.jhotdraw.app.action.file;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.api.app.Application;
 import org.jhotdraw.api.app.View;
 import org.jhotdraw.api.gui.URIChooser;
@@ -73,7 +72,6 @@ public class OpenFileAction extends AbstractOpenFileAction {
         return getApplication().getOpenChooser(null);
     }
 
-    @FeatureEntryPoint(value = "openFile")
     @Override
     public void actionPerformed(ActionEvent evt) {
         final Application app = getApplication();

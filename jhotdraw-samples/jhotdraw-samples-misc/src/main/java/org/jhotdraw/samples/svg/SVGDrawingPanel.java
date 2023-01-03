@@ -7,7 +7,6 @@
  */
 package org.jhotdraw.samples.svg;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.api.app.Disposable;
 import org.jhotdraw.draw.*;
 import org.jhotdraw.draw.io.*;
@@ -111,7 +110,6 @@ public class SVGDrawingPanel extends JPanel implements Disposable {
      * Creates a new Drawing object which can be used with this
      * {@code SVGDrawingPanel}.
      */
-    @FeatureEntryPoint(value = "svgDrawingPanel")
     public Drawing createDrawing() {
         Drawing drawing = new QuadTreeDrawing();
         LinkedList<InputFormat> inputFormats = new LinkedList<>();

@@ -8,7 +8,6 @@
  */
 package org.jhotdraw.samples.svg;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.action.edit.RedoAction;
 import org.jhotdraw.action.edit.UndoAction;
 import org.jhotdraw.api.app.View;
@@ -135,7 +134,6 @@ public class SVGView extends AbstractView {
     /**
      * Reads the view from the specified uri.
      */
-    @FeatureEntryPoint(value = "svgView")
     @Override
     public void read(final URI uri, URIChooser chooser) throws IOException {
         try {

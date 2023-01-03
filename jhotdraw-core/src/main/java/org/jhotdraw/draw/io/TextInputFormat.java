@@ -7,7 +7,6 @@
  */
 package org.jhotdraw.draw.io;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.Drawing;
 import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.TextHolderFigure;
@@ -118,7 +117,6 @@ public class TextInputFormat implements InputFormat {
         read(new File(uri), drawing);
     }
 
-    @FeatureEntryPoint(value = "drawText")
     @Override
     public void read(URI uri, Drawing drawing, boolean replace) throws IOException {
         read(new File(uri), drawing, replace);
