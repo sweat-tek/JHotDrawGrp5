@@ -21,7 +21,7 @@ public class OpenFileFeatureBDD extends AssertJSwingJUnitTestCase {
     public static final String IMAGE_NAME = "actions.png";
     public static FrameFixture frame;
     @ClassRule
-    public static final JGivenClassRule writerRule = new JGivenClassRule();
+    public static final JGivenClassRule WRITER_RULE = new JGivenClassRule();
 
     @Rule
     public final JGivenMethodRule scenarioRule = new JGivenMethodRule();
