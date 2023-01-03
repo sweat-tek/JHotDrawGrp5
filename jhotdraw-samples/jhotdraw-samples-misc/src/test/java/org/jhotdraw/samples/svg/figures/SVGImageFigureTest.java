@@ -28,11 +28,21 @@ public class SVGImageFigureTest {
             throw new AssertionFailedError();
         }
 
-        assertThrows(IOException.class, () -> {
+        String message = assertThrows(IOException.class, () -> {
             URI newUri = URI.create("file:" + Paths.get(IMAGE_PATH + "corruptFile.png").toAbsolutePath());
             File corruptFile = new File(newUri);
             svgImageFigure.loadImage(corruptFile);
-        });
+        }).getMessage();
+
+        assertTrue(message.contains("Couldn't load image from file"));
+
+        message = assertThrows(IOException.class, () -> {
+            URI newUri = URI.create("file:" + Paths.get(IMAGE_PATH + "test.txt").toAbsolutePath());
+            File corruptFile = new File(newUri);
+            svgImageFigure.loadImage(corruptFile);
+        }).getMessage();
+
+        assertTrue(message.contains("Couldn't load image from file"));
     }
 
     @Test
