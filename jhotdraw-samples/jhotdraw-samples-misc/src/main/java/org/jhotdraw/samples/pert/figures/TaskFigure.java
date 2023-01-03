@@ -7,7 +7,7 @@
  */
 package org.jhotdraw.samples.pert.figures;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
+
 import org.jhotdraw.draw.figure.RectangleFigure;
 import org.jhotdraw.draw.figure.TextFigure;
 import org.jhotdraw.draw.figure.ListFigure;
@@ -82,7 +82,6 @@ public class TaskFigure extends GraphicalCompositeFigure {
     /**
      * Creates a new instance.
      */
-    @FeatureEntryPoint(value = "taskfigure")
     public TaskFigure() {
         super(new RectangleFigure());
         setLayouter(new VerticalLayouter());
