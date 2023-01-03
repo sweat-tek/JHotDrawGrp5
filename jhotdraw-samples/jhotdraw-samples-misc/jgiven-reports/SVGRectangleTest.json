@@ -14,50 +14,50 @@
           "caseNr": 1,
           "steps": [
             {
-              "name": "some state",
+              "name": "a Rectangle",
               "words": [
                 {
                   "value": "Given",
                   "isIntroWord": true
                 },
                 {
-                  "value": "some state"
+                  "value": "a Rectangle"
                 }
               ],
               "status": "PASSED",
-              "durationInNanos": 334750792,
+              "durationInNanos": 328607042,
               "depth": 0,
               "parentFailed": false
             },
             {
-              "name": "some action",
+              "name": "trying to move the rectangle",
               "words": [
                 {
                   "value": "When",
                   "isIntroWord": true
                 },
                 {
-                  "value": "some action"
+                  "value": "trying to move the rectangle"
                 }
               ],
               "status": "PASSED",
-              "durationInNanos": 862084,
+              "durationInNanos": 1160208,
               "depth": 0,
               "parentFailed": false
             },
             {
-              "name": "some outcome",
+              "name": "the rectangle should have repositioned",
               "words": [
                 {
                   "value": "Then",
                   "isIntroWord": true
                 },
                 {
-                  "value": "some outcome"
+                  "value": "the rectangle should have repositioned"
                 }
               ],
               "status": "PASSED",
-              "durationInNanos": 268042,
+              "durationInNanos": 586416,
               "depth": 0,
               "parentFailed": false
             }
@@ -65,11 +65,11 @@
           "explicitArguments": [],
           "derivedArguments": [],
           "status": "SUCCESS",
-          "durationInNanos": 348691500
+          "durationInNanos": 342820083
         }
       ],
       "casesAsTable": false,
-      "durationInNanos": 348691500
+      "durationInNanos": 342820083
     }
   ],
   "tagMap": {}

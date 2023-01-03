@@ -7,7 +7,6 @@
  */
 package org.jhotdraw.draw.tool;
 
-import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.CompositeFigure;
 
@@ -254,16 +253,13 @@ public class CreationTool extends AbstractTool {
         }
 
     }
-    @FeatureEntryPoint(value = "CreationTool")
+
     @Override
     public void mouseReleased(MouseEvent evt) {
-        System.out.println(evt.getComponent());
-
         if (createdFigure == null && isToolDoneAfterCreation()) {
             fireToolDone();
             return;
         }
-
         Rectangle2D.Double bounds = createdFigure.getBounds();
         if (bounds.width == 0 && bounds.height == 0) {
             getDrawing().remove(createdFigure);
@@ -272,17 +268,12 @@ public class CreationTool extends AbstractTool {
                 fireToolDone();
                 return;
             }
-
         }
-
         setFigurePosition(evt);
-
         if (createdFigure instanceof CompositeFigure) {
             ((CompositeFigure) createdFigure).layout();
         }
-
         addUndoHandling();
-
         Rectangle r = new Rectangle(anchor.x, anchor.y, 0, 0);
         r.add(evt.getX(), evt.getY());
         maybeFireBoundsInvalidated(r);

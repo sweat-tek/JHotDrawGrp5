@@ -30,8 +30,9 @@ public class UnitTestRectangle {
     }
     @Test
     public void testCloning(){
+        // Clone
         SVGRectFigure clonedRect = rectangle.clone();
-
+        // Assert
         Assert.assertTrue(rectangle.getHeight() == clonedRect.getHeight() && rectangle.getWidth() == clonedRect.getWidth());
     }
 
