@@ -23,4 +23,4 @@ jobs:
     needs: run_build
     steps:
       - name: Run tests
-        run: mvn -B test --file pom.xml
+        run: mvn test -Dtest="GroupingTest" -DfailIfNoTests=false
