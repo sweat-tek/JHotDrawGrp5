@@ -10,11 +10,13 @@ package org.jhotdraw.draw.tool;
 import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.CompositeFigure;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
 import javax.swing.undo.*;
+
 import org.jhotdraw.draw.*;
 import org.jhotdraw.util.*;
 
@@ -98,6 +100,7 @@ public class CreationTool extends AbstractTool {
     public CreationTool(String prototypeClassName, Map<AttributeKey<?>, Object> attributes) {
         this(prototypeClassName, attributes, null);
     }
+
     public CreationTool(String prototypeClassName, Map<AttributeKey<?>, Object> attributes, String name) {
         try {
             this.prototype = (Figure) Class.forName(prototypeClassName).newInstance();
@@ -132,9 +135,9 @@ public class CreationTool extends AbstractTool {
      * Figure is created, the CreationTool applies the default attributes from the DrawingEditor to
      * it, and then it applies the attributes to it, that have been supplied in this constructor.
      *
-     * @param prototype The prototype used to create a new Figure.
+     * @param prototype  The prototype used to create a new Figure.
      * @param attributes The CreationTool applies these attributes to the prototype after having
-     * applied the default attributes from the DrawingEditor.
+     *                   applied the default attributes from the DrawingEditor.
      */
     public CreationTool(Figure prototype, Map<AttributeKey<?>, Object> attributes) {
         this(prototype, attributes, null);
@@ -143,10 +146,10 @@ public class CreationTool extends AbstractTool {
     /**
      * Creates a new instance with the specified prototype and attribute set.
      *
-     * @param prototype The prototype used to create a new Figure.
+     * @param prototype  The prototype used to create a new Figure.
      * @param attributes The CreationTool applies these attributes to the prototype after having
-     * applied the default attributes from the DrawingEditor.
-     * @param name The name parameter is currently not used.
+     *                   applied the default attributes from the DrawingEditor.
+     * @param name       The name parameter is currently not used.
      * @deprecated This constructor might go away, because the name parameter is not used.
      */
     @Deprecated
@@ -213,67 +216,80 @@ public class CreationTool extends AbstractTool {
         }
     }
 
+    private void addUndoHandling() {
+        getDrawing().fireUndoableEditHappened(new AbstractUndoableEdit() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String getPresentationName() {
+                return presentationName;
+            }
+
+            @Override
+            public void undo() throws CannotUndoException {
+                super.undo();
+                getDrawing().remove(createdFigure);
+            }
+
+            @Override
+            public void redo() throws CannotRedoException {
+                super.redo();
+                getDrawing().add(createdFigure);
+            }
+        });
+    }
+
+
+    private void setFigurePosition(MouseEvent evt){
+        if (Math.abs(anchor.x - evt.getX()) < minimalSizeTreshold.width
+                && Math.abs(anchor.y - evt.getY()) < minimalSizeTreshold.height) {
+            createdFigure.willChange();
+            createdFigure.setBounds(
+                    constrainPoint(new Point(anchor.x, anchor.y), createdFigure),
+                    constrainPoint(new Point(
+                                    anchor.x + (int) Math.max(createdFigure.getBounds().width, minimalSize.width),
+                                    anchor.y + (int) Math.max(createdFigure.getBounds().height, minimalSize.height)),
+                            createdFigure));
+            createdFigure.changed();
+        }
+
+    }
     @FeatureEntryPoint(value = "CreationTool")
     @Override
     public void mouseReleased(MouseEvent evt) {
+        System.out.println(evt.getComponent());
 
-        if (createdFigure != null) {
-            Rectangle2D.Double bounds = createdFigure.getBounds();
-            if (bounds.width == 0 && bounds.height == 0) {
-                getDrawing().remove(createdFigure);
-                if (isToolDoneAfterCreation()) {
-                    fireToolDone();
-                }
-            } else {
-                if (Math.abs(anchor.x - evt.getX()) < minimalSizeTreshold.width
-                        && Math.abs(anchor.y - evt.getY()) < minimalSizeTreshold.height) {
-                    createdFigure.willChange();
-                    createdFigure.setBounds(
-                            constrainPoint(new Point(anchor.x, anchor.y), createdFigure),
-                            constrainPoint(new Point(
-                                    anchor.x + (int) Math.max(bounds.width, minimalSize.width),
-                                    anchor.y + (int) Math.max(bounds.height, minimalSize.height)),
-                                    createdFigure));
-                    createdFigure.changed();
-                }
-                if (createdFigure instanceof CompositeFigure) {
-                    ((CompositeFigure) createdFigure).layout();
-                }
-                final Figure addedFigure = createdFigure;
-                final Drawing addedDrawing = getDrawing();
-                getDrawing().fireUndoableEditHappened(new AbstractUndoableEdit() {
-                    private static final long serialVersionUID = 1L;
+        if (createdFigure == null && isToolDoneAfterCreation()) {
+            fireToolDone();
+            return;
+        }
 
-                    @Override
-                    public String getPresentationName() {
-                        return presentationName;
-                    }
+        Rectangle2D.Double bounds = createdFigure.getBounds();
+        if (bounds.width == 0 && bounds.height == 0) {
+            getDrawing().remove(createdFigure);
 
-                    @Override
-                    public void undo() throws CannotUndoException {
-                        super.undo();
-                        addedDrawing.remove(addedFigure);
-                    }
-
-                    @Override
-                    public void redo() throws CannotRedoException {
-                        super.redo();
-                        addedDrawing.add(addedFigure);
-                    }
-                });
-
-                Rectangle r = new Rectangle(anchor.x, anchor.y, 0, 0);
-                r.add(evt.getX(), evt.getY());
-                maybeFireBoundsInvalidated(r);
-                creationFinished(createdFigure);
-                createdFigure = null;
-            }
-        } else {
             if (isToolDoneAfterCreation()) {
                 fireToolDone();
+                return;
             }
+
         }
+
+        setFigurePosition(evt);
+
+        if (createdFigure instanceof CompositeFigure) {
+            ((CompositeFigure) createdFigure).layout();
+        }
+
+        addUndoHandling();
+
+        Rectangle r = new Rectangle(anchor.x, anchor.y, 0, 0);
+        r.add(evt.getX(), evt.getY());
+        maybeFireBoundsInvalidated(r);
+        creationFinished(createdFigure);
+        createdFigure = null;
     }
+
 
     @SuppressWarnings("unchecked")
     protected Figure createFigure() {

@@ -1,0 +1,76 @@
+{
+  "className": "TheTestClass",
+  "name": "The Test Class",
+  "scenarios": [
+    {
+      "className": "TheTestClass",
+      "testMethodName": "something_should_happen",
+      "description": "something should happen",
+      "tagIds": [],
+      "explicitParameters": [],
+      "derivedParameters": [],
+      "scenarioCases": [
+        {
+          "caseNr": 1,
+          "steps": [
+            {
+              "name": "some state",
+              "words": [
+                {
+                  "value": "Given",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "some state"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 343847250,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "some action",
+              "words": [
+                {
+                  "value": "When",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "some action"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 922709,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "some outcome",
+              "words": [
+                {
+                  "value": "Then",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "some outcome"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 335167,
+              "depth": 0,
+              "parentFailed": false
+            }
+          ],
+          "explicitArguments": [],
+          "derivedArguments": [],
+          "status": "SUCCESS",
+          "durationInNanos": 352731917
+        }
+      ],
+      "casesAsTable": false,
+      "durationInNanos": 352731917
+    }
+  ],
+  "tagMap": {}
+}

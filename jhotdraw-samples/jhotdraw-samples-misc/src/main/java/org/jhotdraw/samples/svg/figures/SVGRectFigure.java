@@ -59,6 +59,8 @@ public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
         double cv = 4.0 / 3.0 * a * b / c;
         ACV = (1.0 - cv);
     }
+
+
     /**
      */
     private RoundRectangle2D.Double roundrect;
@@ -74,18 +76,19 @@ public class SVGRectFigure extends SVGAttributedFigure implements SVGFigure {
     /**
      * Creates a new instance.
      */
-    public SVGRectFigure() {
-        this(0, 0, 0, 0);
-    }
+
+
     @FeatureEntryPoint(value = "Rectangle")
-    public SVGRectFigure(double x, double y, double width, double height) {
-        this(x, y, width, height, 0, 0);
-    }
     public SVGRectFigure(double x, double y, double width, double height, double rx, double ry) {
         roundrect = new RoundRectangle2D.Double(x, y, width, height, rx, ry);
         SVGAttributeKeys.setDefaults(this);
         setConnectable(false);
     }
+
+    public static SVGRectFigure createSVGRectFigureNoArgs() {
+        return new SVGRectFigure(0, 0, 0, 0, 0, 0);
+    }
+
 
     // DRAWING
     @Override
