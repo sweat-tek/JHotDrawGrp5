@@ -25,7 +25,9 @@ public class UnitTestRectangle {
         affineTransform.translate(30, 30);
         // Move rectangle
         rectangle.transform(affineTransform);
-        // Assert
+        // Check for boundary cases
+        Assert.assertTrue(rectangle.getHeight() >= 0 && rectangle.getWidth() >= 0);
+        // Assert movement
         Assert.assertTrue(rectangle.getX() == 40.0 && rectangle.getY()== 40.0);
     }
     @Test
@@ -33,7 +35,8 @@ public class UnitTestRectangle {
         // Clone
         SVGRectFigure clonedRect = rectangle.clone();
         // Assert
-        Assert.assertTrue(rectangle.getHeight() == clonedRect.getHeight() && rectangle.getWidth() == clonedRect.getWidth());
+        Assert.assertTrue(rectangle.getHeight() == clonedRect.getHeight()
+                && rectangle.getWidth() == clonedRect.getWidth());
     }
 
 
