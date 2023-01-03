@@ -16,7 +16,7 @@ import java.awt.*;
 import static org.assertj.swing.finder.WindowFinder.findFrame;
 import static org.assertj.swing.launcher.ApplicationLauncher.application;
 
-public class OpenFileFeatureBDD extends AssertJSwingJUnitTestCase {
+public class OpenFileFeatureBDDTest extends AssertJSwingJUnitTestCase {
     public static final String IMAGES_PATH = "src/test/resources/org.jhotdraw/";
     public static final String IMAGE_NAME = "actions.png";
     public static FrameFixture frame;
@@ -47,7 +47,7 @@ public class OpenFileFeatureBDD extends AssertJSwingJUnitTestCase {
             }
         }).using(robot());
 
-        OpenFileFeatureBDD.frame = frame;
+        OpenFileFeatureBDDTest.frame = frame;
 
         givenClickOpenFile.given().openingOpenFileDialog();
         whenSelectValidFile.when().selectingValidFile().and().clickOk();

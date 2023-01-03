@@ -12,8 +12,8 @@ import java.nio.file.Paths;
 public class WhenSelectValidFile extends Stage<WhenSelectValidFile> {
     @As( "selecting a valid file")
     public WhenSelectValidFile selectingValidFile() {
-        FrameFixture frame = OpenFileFeatureBDD.frame;
-        Path path = Paths.get(OpenFileFeatureBDD.IMAGES_PATH + OpenFileFeatureBDD.IMAGE_NAME).toAbsolutePath();
+        FrameFixture frame = OpenFileFeatureBDDTest.frame;
+        Path path = Paths.get(OpenFileFeatureBDDTest.IMAGES_PATH + OpenFileFeatureBDDTest.IMAGE_NAME).toAbsolutePath();
 
         frame.textBox("GTKFileChooser.fileNameTextField").setText(path.toString());
 
@@ -22,7 +22,7 @@ public class WhenSelectValidFile extends Stage<WhenSelectValidFile> {
 
     @As( "clicks the 'OK' button")
     public WhenSelectValidFile clickOk() {
-        FrameFixture frame = OpenFileFeatureBDD.frame;
+        FrameFixture frame = OpenFileFeatureBDDTest.frame;
         GenericTypeMatcher<JButton> okMatcher = new GenericTypeMatcher<JButton>(JButton.class) {
             @Override
             protected boolean isMatching(JButton item) {

@@ -9,7 +9,7 @@ import javax.swing.*;
 public class GivenClickOpenFile extends Stage<GivenClickOpenFile> {
     @As( "opening the 'open file' dialog in the menu" )
     public void openingOpenFileDialog() {
-        FrameFixture frame = OpenFileFeatureBDD.frame;
+        FrameFixture frame = OpenFileFeatureBDDTest.frame;
         GenericTypeMatcher<JMenuItem> fileMenuItemMatcher = new GenericTypeMatcher<JMenuItem>(JMenuItem.class) {
             @Override
             protected boolean isMatching(JMenuItem menuItem) {
