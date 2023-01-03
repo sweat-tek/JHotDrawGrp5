@@ -8,9 +8,12 @@ import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -63,5 +66,32 @@ public class ImageInputFormatTest {
             File badFile = new File(IMAGE_PATH + "thisDoesNotExists.png");
             inputFormat.read(badFile, drawing, false);
         });
+    }
+
+    @Test
+    public void readImageFromInputStream() {
+        ImageHolderFigure imageHolderFigure = Mockito.mock(ImageHolderFigure.class);
+        when(imageHolderFigure.clone()).thenReturn(Mockito.spy(imageHolderFigure));
+
+        Drawing drawing = Mockito.mock(Drawing.class);
+        ImageInputFormat inputFormat = new ImageInputFormat(imageHolderFigure);
+
+        URI uri = URI.create("file:" + Paths.get(IMAGE_PATH + "actions.png").toAbsolutePath());
+
+        InputStream inputStream;
+        try {
+            inputStream = Files.newInputStream(new File(uri).toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertNotNull(inputStream);
+
+        try {
+            inputFormat.read(inputStream, drawing, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new AssertionFailedError();
+        }
     }
 }
