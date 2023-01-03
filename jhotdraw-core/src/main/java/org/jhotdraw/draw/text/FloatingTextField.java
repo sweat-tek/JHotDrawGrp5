@@ -80,11 +80,29 @@ public class FloatingTextField {
     }
 
     protected void updateWidget() {
+        // Update the styling of the text field
+        updateStyling();
+        // Update the bounds of the text field
+        updateBounds();
+    }
+
+    /** 
+     * Updates the styling of the text field.
+     * Specifically the font, text color and background color are updated.
+     */
+    private void updateStyling() {
         Font font = editedFigure.getFont();
         font = font.deriveFont(font.getStyle(), (float) (editedFigure.getFontSize() * view.getScaleFactor()));
         textField.setFont(font);
         textField.setForeground(editedFigure.getTextColor());
         textField.setBackground(editedFigure.getFillColor());
+    }
+
+    /**
+     * Updates the bounds of the text field.
+     */
+    private void updateBounds() {
+        Font font = textField.getFont();
         Rectangle2D.Double fDrawBounds = editedFigure.getBounds();
         Point2D.Double fDrawLoc = new Point2D.Double(fDrawBounds.getX(), fDrawBounds.getY());
         if (editedFigure.get(TRANSFORM) != null) {
