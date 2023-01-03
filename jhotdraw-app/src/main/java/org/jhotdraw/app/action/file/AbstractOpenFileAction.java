@@ -61,7 +61,7 @@ public abstract class AbstractOpenFileAction extends AbstractApplicationAction {
                     view.getComponent().requestFocus();
                     app.addRecentURI(uri);
                 } catch (InterruptedException | ExecutionException e) {
-                    Logger.getLogger(OpenFileAction.class.getName()).log(Level.SEVERE, null, e);
+                    Logger.getLogger(AbstractOpenFileAction.class.getName()).log(Level.SEVERE, null, e);
                     e.printStackTrace();
                     handleIOError(e, uri, view);
                 } finally {
