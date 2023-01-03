@@ -14,7 +14,7 @@ import static org.assertj.swing.launcher.ApplicationLauncher.application;
 
 public class MainTest extends AssertJSwingJUnitTestCase {
 
-    private final String IMAGES_PATH = "src/test/resources/org.jhotdraw/";
+    public final String IMAGES_PATH = "src/test/resources/org.jhotdraw/";
     private final String IMAGE_NAME = "actions.png";
 
     @Override

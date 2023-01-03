@@ -1,0 +1,92 @@
+{
+  "className": "BDD.openfilefeature.OpenFileFeatureBDD",
+  "name": "Open File Feature BDD",
+  "scenarios": [
+    {
+      "className": "BDD.openfilefeature.OpenFileFeatureBDD",
+      "testMethodName": "openValidFileIntoDrawing",
+      "description": "Open valid file into drawing",
+      "tagIds": [],
+      "explicitParameters": [],
+      "derivedParameters": [],
+      "scenarioCases": [
+        {
+          "caseNr": 1,
+          "steps": [
+            {
+              "name": "opening the \u0027open file\u0027 dialog in the menu",
+              "words": [
+                {
+                  "value": "given",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "opening the \u0027open file\u0027 dialog in the menu"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 1027906173,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "selecting a valid file",
+              "words": [
+                {
+                  "value": "when",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "selecting a valid file"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 68856074,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "clicks the \u0027OK\u0027 button",
+              "words": [
+                {
+                  "value": "and",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "clicks the \u0027OK\u0027 button"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 238574409,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "the file is added to the drawing panel with the correct title",
+              "words": [
+                {
+                  "value": "then",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "the file is added to the drawing panel with the correct title"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 41877341,
+              "depth": 0,
+              "parentFailed": false
+            }
+          ],
+          "explicitArguments": [],
+          "derivedArguments": [],
+          "status": "SUCCESS",
+          "durationInNanos": 2100496722
+        }
+      ],
+      "casesAsTable": false,
+      "durationInNanos": 2100496722
+    }
+  ],
+  "tagMap": {}
+}

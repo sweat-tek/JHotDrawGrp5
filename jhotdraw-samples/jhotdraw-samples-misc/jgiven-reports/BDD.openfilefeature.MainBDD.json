@@ -1,0 +1,97 @@
+{
+  "className": "BDD.openfilefeature.MainBDD",
+  "name": "Main BDD",
+  "scenarios": [
+    {
+      "className": "BDD.openfilefeature.MainBDD",
+      "testMethodName": "something_should_happen",
+      "description": "something should happen",
+      "tagIds": [],
+      "explicitParameters": [],
+      "derivedParameters": [],
+      "scenarioCases": [
+        {
+          "caseNr": 1,
+          "steps": [
+            {
+              "name": "opening open file dialog",
+              "words": [
+                {
+                  "value": "given",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "opening open file dialog"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@4d956705",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@4d956705"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 1176823837,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "selecting valid file",
+              "words": [
+                {
+                  "value": "when",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "selecting valid file"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@4d956705",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@4d956705"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 721459,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "the file is added to drawing",
+              "words": [
+                {
+                  "value": "then",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "the file is added to drawing"
+                },
+                {
+                  "value": "org.assertj.swing.fixture.FrameFixture@4d956705",
+                  "argumentInfo": {
+                    "argumentName": "frame",
+                    "formattedValue": "org.assertj.swing.fixture.FrameFixture@4d956705"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 910876,
+              "depth": 0,
+              "parentFailed": false
+            }
+          ],
+          "explicitArguments": [],
+          "derivedArguments": [],
+          "status": "SUCCESS",
+          "durationInNanos": 1903704835
+        }
+      ],
+      "casesAsTable": false,
+      "durationInNanos": 1903704835
+    }
+  ],
+  "tagMap": {}
+}
