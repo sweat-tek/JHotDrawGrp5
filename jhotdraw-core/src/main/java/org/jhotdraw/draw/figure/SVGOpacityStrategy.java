@@ -27,7 +27,6 @@ public class SVGOpacityStrategy implements OpacityStrategy{
             group.templateDraw(drawingArea, g, opacity);
         }
         return false;
-
     }
 
     @Override
