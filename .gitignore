@@ -7,3 +7,5 @@ target
 nb-configuration.xml
 *.*~
 *.ftf
+*.iml
+.idea/
