@@ -30,6 +30,13 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<description>This is a fork of jhotdraw from http://sourceforge.net/projects/jhotdraw</description>
+	<repositories>
+		<repository>
+			<id>github</id>
+			<name>Github external packages</name>
+			<url>https://maven.pkg.github.com/sweat-tek/MavenRepository/</url>
+		</repository>
+	</repositories>
 	<build>
 		<plugins>
 			<plugin>

@@ -17,6 +17,7 @@ import javax.swing.undo.UndoableEdit;
 import org.jhotdraw.draw.*;
 import org.jhotdraw.draw.text.*;
 import org.jhotdraw.util.ResourceBundleUtil;
+import dk.sdu.mmmi.featuretracer.lib.FeatureEntryPoint;
 
 /**
  * A tool to create figures which implement the {@code TextHolderFigure}
@@ -85,6 +86,7 @@ public class TextCreationTool extends CreationTool implements ActionListener {
     /**
      * Creates a new figure at the location where the mouse was pressed.
      */
+    @FeatureEntryPoint(value = "TextCreationTool-CreateFigure")
     @Override
     public void mousePressed(MouseEvent e) {
         // Note: The search sequence used here, must be
@@ -111,6 +113,7 @@ public class TextCreationTool extends CreationTool implements ActionListener {
     public void mouseDragged(java.awt.event.MouseEvent e) {
     }
 
+    @FeatureEntryPoint(value = "TextCreationTool-BeginEdit")
     protected void beginEdit(TextHolderFigure textHolder) {
         if (textField == null) {
             textField = new FloatingTextField();
@@ -128,6 +131,7 @@ public class TextCreationTool extends CreationTool implements ActionListener {
     public void mouseReleased(MouseEvent evt) {
     }
 
+    @FeatureEntryPoint(value = "TextCreationTool-EndEdit")
     protected void endEdit() {
         if (typingTarget != null) {
             typingTarget.willChange();
