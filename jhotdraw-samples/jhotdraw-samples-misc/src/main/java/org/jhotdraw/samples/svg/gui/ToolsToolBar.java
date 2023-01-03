@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
+
 import org.jhotdraw.action.edit.DuplicateAction;
 import org.jhotdraw.draw.AttributeKey;
 import org.jhotdraw.draw.AttributeKeys;
@@ -20,9 +21,7 @@ import static org.jhotdraw.draw.AttributeKeys.PATH_CLOSED;
 import org.jhotdraw.draw.DrawingEditor;
 import org.jhotdraw.draw.DrawingView;
 import org.jhotdraw.draw.action.*;
-import org.jhotdraw.draw.tool.CreationTool;
-import org.jhotdraw.draw.tool.TextAreaCreationTool;
-import org.jhotdraw.draw.tool.TextCreationTool;
+import org.jhotdraw.draw.tool.*;
 import org.jhotdraw.gui.action.ButtonFactory;
 import org.jhotdraw.gui.plaf.palette.PaletteButtonUI;
 import org.jhotdraw.samples.svg.PathTool;
@@ -48,6 +47,9 @@ import org.jhotdraw.util.*;
 public class ToolsToolBar extends AbstractToolBar {
 
     private static final long serialVersionUID = 1L;
+
+
+
 
     /**
      * Creates new instance.
@@ -91,7 +93,7 @@ public class ToolsToolBar extends AbstractToolBar {
                 p.add(btn, gbc);
                 labels.configureToolBarButton(btn, "selectionTool");
                 attributes = new HashMap<AttributeKey<?>, Object>();
-                btn = ButtonFactory.addToolTo(this, editor, creationTool = new CreationTool(new SVGRectFigure(), attributes), "createRectangle", labels);
+                btn = ButtonFactory.addToolTo(this, editor, creationTool = new CreationTool(SVGRectFigure.createSVGRectFigureNoArgs(), attributes), "createRectangle", labels);
                 creationTool.setToolDoneAfterCreation(false);
                 btn.setUI((PaletteButtonUI) PaletteButtonUI.createUI(btn));
                 gbc = new GridBagConstraints();
@@ -167,11 +169,10 @@ public class ToolsToolBar extends AbstractToolBar {
                 gbc.gridy = 2;
                 gbc.insets = new Insets(3, 3, 0, 0);
                 p.add(btn, gbc);
-            break;
+                break;
         }
         return p;
     }
-
     public Collection<Action> createSelectionActions(DrawingEditor editor) {
         LinkedList<Action> list = new LinkedList<Action>();
         AbstractSelectedAction a;

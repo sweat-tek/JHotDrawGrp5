@@ -12,6 +12,7 @@ import java.beans.*;
 import java.util.LinkedList;
 import java.util.prefs.*;
 import javax.swing.*;
+
 import org.jhotdraw.api.app.Disposable;
 import org.jhotdraw.draw.DrawingEditor;
 import org.jhotdraw.gui.JDisclosureToolBar;

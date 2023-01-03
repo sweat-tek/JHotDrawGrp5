@@ -7,6 +7,7 @@
  */
 package org.jhotdraw.samples.pert.figures;
 
+
 import org.jhotdraw.draw.figure.RectangleFigure;
 import org.jhotdraw.draw.figure.TextFigure;
 import org.jhotdraw.draw.figure.ListFigure;

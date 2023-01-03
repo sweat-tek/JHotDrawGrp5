@@ -1,0 +1,76 @@
+{
+  "className": "SVGRectangleTest",
+  "name": "SVG Rectangle",
+  "scenarios": [
+    {
+      "className": "SVGRectangleTest",
+      "testMethodName": "svgRectangleShouldMove",
+      "description": "Svg rectangle should move",
+      "tagIds": [],
+      "explicitParameters": [],
+      "derivedParameters": [],
+      "scenarioCases": [
+        {
+          "caseNr": 1,
+          "steps": [
+            {
+              "name": "a Rectangle",
+              "words": [
+                {
+                  "value": "Given",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "a Rectangle"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 328607042,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "trying to move the rectangle",
+              "words": [
+                {
+                  "value": "When",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "trying to move the rectangle"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 1160208,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "the rectangle should have repositioned",
+              "words": [
+                {
+                  "value": "Then",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "the rectangle should have repositioned"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 586416,
+              "depth": 0,
+              "parentFailed": false
+            }
+          ],
+          "explicitArguments": [],
+          "derivedArguments": [],
+          "status": "SUCCESS",
+          "durationInNanos": 342820083
+        }
+      ],
+      "casesAsTable": false,
+      "durationInNanos": 342820083
+    }
+  ],
+  "tagMap": {}
+}

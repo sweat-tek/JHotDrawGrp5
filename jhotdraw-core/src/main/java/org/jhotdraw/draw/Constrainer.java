@@ -46,6 +46,7 @@ public interface Constrainer {
      * @param p A point on the drawing.
      * @return Returns the constrained point.
      */
+
     public Point2D.Double constrainPoint(Point2D.Double p, Figure... figures);
 
     /**

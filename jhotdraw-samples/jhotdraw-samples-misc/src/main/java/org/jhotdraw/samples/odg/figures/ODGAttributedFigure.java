@@ -36,7 +36,6 @@ public abstract class ODGAttributedFigure extends AbstractAttributedFigure imple
      */
     public ODGAttributedFigure() {
     }
-
     @Override
     public void draw(Graphics2D g) {
         double opacity = get(OPACITY);

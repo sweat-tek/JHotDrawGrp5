@@ -40,6 +40,7 @@ public class SVGImageFigure extends SVGAttributedFigure implements SVGFigure, Im
     /**
      * This rectangle describes the bounds into which we draw the image.
      */
+
     private Rectangle2D.Double rectangle;
     /**
      * This is used to perform faster drawing.
@@ -66,7 +67,6 @@ public class SVGImageFigure extends SVGAttributedFigure implements SVGFigure, Im
     public SVGImageFigure() {
         this(0, 0, 0, 0);
     }
-
     public SVGImageFigure(double x, double y, double width, double height) {
         rectangle = new Rectangle2D.Double(x, y, width, height);
         SVGAttributeKeys.setDefaults(this);
